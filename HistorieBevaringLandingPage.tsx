@@ -83,7 +83,7 @@ export const HistorieBevaringLandingPage: React.FC = () => {
           <nav aria-label="Hovedmeny" className="flex items-center gap-7 text-[15px] font-bold">
             <a href="#tilbud" className="hover:underline text-[#182222] focus:outline-none focus:ring-2 focus:ring-[#B4863D]">Hva vi tilbyr</a>
             <a href="#arbeidsmate" className="hover:underline text-[#182222] focus:outline-none focus:ring-2 focus:ring-[#B4863D]">Arbeidsmåten</a>
-            <a href="#workshop" className="hover:underline text-[#182222] focus:outline-none focus:ring-2 focus:ring-[#B4863D]">Verksted</a>
+            <a href="#prosjekt" className="hover:underline text-[#182222] focus:outline-none focus:ring-2 focus:ring-[#B4863D]">Samarbeid</a>
             <a href="#kontakt" className="hover:underline text-[#182222] focus:outline-none focus:ring-2 focus:ring-[#B4863D]">Kontakt</a>
           </nav>
         </div>
@@ -268,67 +268,51 @@ export const HistorieBevaringLandingPage: React.FC = () => {
           </div>
         </section>
 
-        {/* 5. Workshop */}
-        <section className="py-24 max-w-[1180px] mx-auto px-6" id="workshop">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
-            
-            <div className="md:col-span-5">
-              <div className="inline-flex items-center gap-2 text-[11px] font-extrabold tracking-[.1em] text-[#182222] uppercase mb-3">
-                <span className="w-2 h-2 bg-[#B4863D]" />
-                VERKSTED · KRISTIANSAND
-              </div>
-              <h2 className="text-[32px] md:text-[46px] font-extrabold tracking-tight leading-[1.06] mb-4">
-                En rolig start på din egen leting.
-              </h2>
-              <p className="text-[20px] text-[#525E5C] leading-[1.42] mb-6">
-                En mulig første pilot er et lite verksted på omtrent to og en halv time.
-              </p>
-              <p className="text-xs text-[#525E5C] leading-relaxed">
-                Dette er en interesseinvitasjon, ikke et bekreftet arrangement. Tid, sted og kapasitet bestemmes først når vi vet om det er grunnlag for en pilot.
-              </p>
+        {/* 5. Et prosjekt vi gjør sammen */}
+        <section className="py-24 max-w-[1180px] mx-auto px-6" id="prosjekt">
+          <div className="inline-flex items-center gap-2 text-[11px] font-extrabold tracking-[.1em] text-[#182222] uppercase mb-3">
+            <span className="w-2 h-2 bg-[#B4863D]" />
+            SAMARBEIDSMODELL
+          </div>
+          <h2 className="text-[32px] md:text-[46px] font-extrabold tracking-tight leading-[1.06] mb-4">
+            Et prosjekt vi gjør sammen
+          </h2>
+          <p className="text-[20px] text-[#525E5C] leading-[1.42] max-w-2xl mb-12">
+            Dette er verken et ensomt kurs eller en oppgave du bare setter bort. Vi legger det opp som et felles, avgrenset prosjekt der vi kombinerer kildene dine med riktige verktøy for lyd, bilde og tekst.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div className="bg-[#FCFAF5] border border-[#CDC3B1] p-7">
+              <span className="text-[11px] font-extrabold tracking-wider uppercase text-[#182222] block mb-2">
+                DITT ANSVAR
+              </span>
+              <h3 className="text-xl font-bold mb-4">Hva du gjør</h3>
+              <ul className="space-y-3 text-sm text-[#525E5C] leading-relaxed">
+                <li><strong className="text-[#182222]">Eier materialet:</strong> Du velger ut hva som skal undersøkes – brev, fotografier, lydopptak eller uavklarte spørsmål i slekta.</li>
+                <li><strong className="text-[#182222]">Kjenner konteksten:</strong> Det er du som kjenner personene, familieforholdene og hva som er verdt å ta vare på.</li>
+                <li><strong className="text-[#182222]">Tar avgjørelsene:</strong> Du gjør vurderingene, godkjenner funnene og bestemmer hva som skal formidles videre.</li>
+              </ul>
             </div>
 
-            <div className="md:col-span-7">
-              <ol className="divide-y divide-[#CDC3B1] border-t border-[#CDC3B1]">
-                <li className="grid grid-cols-[36px_1fr] gap-4 py-5">
-                  <span className="font-extrabold text-[#182222]">01</span>
-                  <div>
-                    <h3 className="font-bold text-lg">Ta med ett spørsmål eller dokument</h3>
-                    <p className="text-sm text-[#525E5C]">Et gammelt brev, et bilde, en eiendom eller en historie du lurer på.</p>
-                  </div>
-                </li>
-                <li className="grid grid-cols-[36px_1fr] gap-4 py-5">
-                  <span className="font-extrabold text-[#182222]">02</span>
-                  <div>
-                    <h3 className="font-bold text-lg">Lær enkle triks og metoder</h3>
-                    <p className="text-sm text-[#525E5C]">Vi viser praktiske søkegrep i arkivene, og hvordan enkel AI-støtte kan hjelpe med tyding og sortering uten å rote det til.</p>
-                  </div>
-                </li>
-                <li className="grid grid-cols-[36px_1fr] gap-4 py-5">
-                  <span className="font-extrabold text-[#182222]">03</span>
-                  <div>
-                    <h3 className="font-bold text-lg">Gjør det selv – eller kom tilbake</h3>
-                    <p className="text-sm text-[#525E5C]">Gå hjem med enkle triks du kan bruke selv. Trenger du mer hjelp senere, kan du komme tilbake til oss for videre bistand.</p>
-                  </div>
-                </li>
-              </ol>
-
-              <aside className="mt-8 p-6 bg-[#FCFAF5] border border-[#CDC3B1]">
-                <h3 className="font-bold text-base mb-3">Hva du sitter igjen med</h3>
-                <ul className="list-disc pl-5 space-y-1.5 text-sm text-[#525E5C]">
-                  <li>Enkle triks og søkemetoder du kan ta med hjem og bruke i eget tempo</li>
-                  <li>Erfaring med trygg og nøktern bruk av AI på historisk materiale</li>
-                  <li>En konkret kildeliste og retning for videre leting</li>
-                  <li>Mulighet til å komme tilbake til oss for mer hjelp hvis du står fast</li>
-                </ul>
-              </aside>
+            <div className="bg-[#FCFAF5] border border-[#CDC3B1] p-7">
+              <span className="text-[11px] font-extrabold tracking-wider uppercase text-[#182222] block mb-2">
+                VÅRT ANSVAR
+              </span>
+              <h3 className="text-xl font-bold mb-4">Hva vi gjør</h3>
+              <ul className="space-y-3 text-sm text-[#525E5C] leading-relaxed">
+                <li><strong className="text-[#182222]">KI for lyd (Audio):</strong> Vi setter opp og kjører transkribering av muntlige opptak og samtaler til søkbar tekst.</li>
+                <li><strong className="text-[#182222]">KI for visuelle kilder:</strong> Vi bruker tekstgjenkjenning (OCR) på bilder og skannede dokumenter, og organiserer filene.</li>
+                <li><strong className="text-[#182222]">KI for tekst:</strong> Vi bruker språkmodeller til å hente ut personer, steder og årstall, og bygge en kronologisk tidslinje.</li>
+                <li><strong className="text-[#182222]">Arkivveiledning:</strong> Vi peker ut relevante registre og kilder når du står fast, og passer på god kildeskikk.</li>
+              </ul>
             </div>
-
           </div>
 
-          <div className="mt-8 text-xs text-[#525E5C] max-w-2xl leading-relaxed">
-            Du velger selv hva du deler. Vi bruker nøytrale eksempler i fellesskap. Fakta, samtykke, publisering og bevaring av eget materiale er ditt ansvar.<br /><br />
-            <strong>Om tid og kostnad:</strong> Vi lover ikke at du finner alle svar på to og en halv time, men du lærer metoden og verktøyene. Å gå i dybden tar tid – både din tid og vår tid. Dersom du senere ønsker at vi skal gjøre større letearbid, tyding eller formidling for deg, avtaler vi omfang og kostnad nærmere på forhånd.
+          <div className="p-6 bg-[#F4EFE4] border border-[#CDC3B1]">
+            <h4 className="font-bold text-base mb-1.5">Hvordan vi gjennomfører det</h4>
+            <p className="text-sm text-[#525E5C] leading-relaxed">
+              Vi starter med en felles avklaring av mål og tidsbruk. Deretter jobber vi stegvis gjennom materialet, slik at du både får strukturert kildene dine og lærer å ta verktøyene i bruk på egen hånd.
+            </p>
           </div>
         </section>
 
