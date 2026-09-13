@@ -17,7 +17,7 @@
 
 - `.env`, secrets og credentials skal aldri leses.
 - Private persondata skal ikke legges i repoet.
-- Ingen destruktive git-kommandoer. Ingen commit, push, deploy eller publisering uten Lars.
+- Ingen destruktive git-kommandoer. Ingen commit uten Lars. (Auto-push er satt opp via `.git/hooks/post-commit` slik at commits automatisk sendes til origin/main).
 - Ikke bygg produkt, MVP, prompts eller automatisering før researchporten er godkjent.
 
 ## Neste handling + sannhetskilde
