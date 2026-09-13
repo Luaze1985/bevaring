@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="HistorieBevaring – arkivkompetanse, grundige søk og kildekontroll for bilder, eiendom, lokalhistorie og familiearkiv.">
+  <meta name="theme-color" content="#182222">
+  <title>HistorieBevaring – Kompetanse på å finne fram</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --paper: #F4EFE4;
+      --paper-light: #FCFAF5;
+      --ink: #182222;
+      --ink-soft: #2C3838;
+      --slate: #525E5C;
+      --slate-light: #8A9694;
+      --line: #CDC3B1;
+      --line-dark: #A89C86;
+      --ochre: #B4863D;
+      --brick: #7A3E34;
+      
+      --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px;
+      --s6: 32px; --s7: 40px; --s8: 56px; --s9: 72px; --s10: 112px;
+      --font: "Atkinson Hyperlegible Next", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: var(--font);
+      font-size: 18px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-underline-offset: 3px; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    :focus-visible { outline: 3px solid var(--ochre); outline-offset: 4px; }
+    .skip { position: absolute; top: -80px; left: 16px; z-index: 100; padding: 12px 16px; color: var(--paper-light); background: var(--ink); text-decoration: none; font-weight: 700; }
+    .skip:focus { top: 16px; }
+    
+    .wrap { width: min(1180px, calc(100% - 48px)); margin-inline: auto; }
+    
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 var(--s3);
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .1em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { width: 8px; height: 8px; background: var(--ochre); content: ""; }
+    
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 14ch;
+      margin-bottom: var(--s5);
+      font-size: clamp(42px, 5.8vw, 76px);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -.045em;
+    }
+    h2 {
+      max-width: 18ch;
+      margin-bottom: var(--s4);
+      font-size: clamp(30px, 3.5vw, 48px);
+      font-weight: 800;
+      line-height: 1.06;
+      letter-spacing: -.035em;
+    }
+    h3 { margin-bottom: 8px; font-size: 21px; line-height: 1.2; letter-spacing: -.02em; font-weight: 700; }
+    .lead { max-width: 52ch; color: var(--slate); font-size: clamp(19px, 2vw, 23px); line-height: 1.42; }
+    .body-copy { max-width: 58ch; color: var(--slate); font-size: 18px; line-height: 1.55; }
+    .section { padding: var(--s10) 0; }
+    
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 14px 28px;
+      border: 1px solid var(--ink);
+      border-radius: 0px;
+      color: var(--paper-light);
+      background: var(--ink);
+      font: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+      transition: all .16s ease;
+    }
+    .button:hover { background: var(--ink-soft); border-color: var(--ink-soft); }
+    .button.ghost { color: var(--ink); border-color: var(--line-dark); background: transparent; }
+    .button.ghost:hover { background: var(--ink); color: var(--paper-light); border-color: var(--ink); }
+    
+    /* Navigation */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--line);
+      background: rgba(252, 250, 245, 0.96);
+      backdrop-filter: blur(10px);
+    }
+    .nav { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: var(--s4); }
+    .wordmark { color: var(--ink); font-size: 18px; font-weight: 800; letter-spacing: -.03em; text-decoration: none; }
+    .wordmark::after { color: var(--ochre); content: " ·"; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a { font-size: 15px; font-weight: 700; text-decoration: none; color: var(--ink); }
+    .nav-links a:hover { text-decoration: underline; }
+
+    /* Hero */
+    .hero { padding: clamp(64px, 10vw, 120px) 0 var(--s10); }
+    .hero-grid { display: grid; grid-template-columns: 7fr 5fr; gap: clamp(40px, 8vw, 88px); align-items: center; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: var(--s3); margin-top: var(--s6); }
+    
+    /* Bildeflater */
+    .photo-frame {
+      position: relative;
+      min-height: 480px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #E5DDCF;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+      transition: border-color .2s ease;
+      box-shadow: 0 4px 16px rgba(24, 34, 34, 0.04);
+    }
+    .photo-frame:hover { border-color: var(--ink); }
+    
+    .photo-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 9px;
+      background: var(--paper-light);
+      border: 1px solid var(--line);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink);
+      width: fit-content;
+      z-index: 2;
+    }
+    .photo-tag::before { content: ""; width: 6px; height: 6px; background: var(--ochre); }
+
+    /* Rolig kildemarginal på hover/fokus */
+    .rollover-layer {
+      position: absolute;
+      inset: 0;
+      background: rgba(252, 250, 245, 0.96);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease;
+      z-index: 10;
+      border: 1px solid var(--line-dark);
+    }
+    .photo-frame:hover .rollover-layer,
+    .photo-frame:focus-within .rollover-layer {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .rollover-layer h4 {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: var(--ink);
+    }
+    .rollover-layer p {
+      font-size: 14px;
+      color: var(--slate);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .rollover-cue {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+    }
+
+    /* Redaksjonelle delinger */
+    .split { display: grid; grid-template-columns: 7fr 5fr; gap: clamp(32px, 7vw, 88px); align-items: center; }
+    .split.reverse { grid-template-columns: 5fr 7fr; }
+    .image-wide { min-height: 460px; }
+    .copy-panel { padding: var(--s4) 0; }
+    .index-line { display: flex; gap: 8px; margin: 0 0 var(--s5); color: var(--slate); font-size: 13px; font-weight: 700; }
+    .index-line span:not(:last-child)::after { margin-left: 8px; color: var(--ochre); content: "/"; }
+
+    /* Kompetanse / Hva vi tilbyr (Ny konkret seksjon) */
+    .offer-section { background: var(--paper-light); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: var(--s9) 0; }
+    .offer-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; margin-top: var(--s6); }
+    .offer-card { border: 1px solid var(--line); padding: 28px; background: var(--paper); }
+    .offer-card h3 { margin-bottom: 8px; font-size: 20px; }
+    .offer-card p { font-size: 16px; color: var(--slate); margin: 0; line-height: 1.5; }
+
+    /* Metode */
+    .method { color: var(--paper-light); background: var(--ink); }
+    .method .eyebrow { color: #E7C985; }
+    .method .eyebrow::before { background: #E7C985; }
+    .method .body-copy { color: #D8DFDE; }
+    .method-grid { display: grid; grid-template-columns: 8fr 4fr; gap: 64px; align-items: end; }
+    .method-quote {
+      padding: 24px 0;
+      border-top: 1px solid rgba(252, 250, 245, 0.25);
+      border-bottom: 1px solid rgba(252, 250, 245, 0.25);
+      color: #E7C985;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    /* Workshop */
+    .workshop-grid { display: grid; grid-template-columns: 5fr 7fr; gap: clamp(32px, 7vw, 88px); align-items: start; }
+    .steps { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+    .steps li { display: grid; grid-template-columns: 36px 1fr; gap: 16px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+    .step-no { color: var(--ink); font-weight: 800; }
+    .steps p { margin: 4px 0 0; color: var(--slate); font-size: 16px; }
+    .finding-box { margin-top: var(--s6); padding: var(--s5); border: 1px solid var(--line); background: var(--paper-light); }
+    .finding-box h3 { margin-bottom: 14px; }
+    .finding-box ul { margin: 0; padding-left: 20px; color: var(--slate); font-size: 15px; }
+    .finding-box li + li { margin-top: 7px; }
+    .fineprint { max-width: 64ch; margin-top: var(--s5); color: var(--slate); font-size: 14px; line-height: 1.5; }
+
+    /* Kontakt */
+    .contact { background: var(--paper-light); border-top: 1px solid var(--line); }
+    .contact .wrap { max-width: 760px; margin-left: max(24px, calc((100% - 1180px) / 2)); }
+    .contact-details { display: grid; gap: 8px; margin-top: var(--s6); padding-top: var(--s5); border-top: 1px solid var(--line); font-size: 17px; font-weight: 700; }
+    
+    details { margin-top: var(--s7); border-top: 1px solid var(--line); }
+    summary { padding: 16px 0; cursor: pointer; font-weight: 700; font-size: 14px; color: var(--slate); }
+    .open-points { display: grid; gap: 8px; padding: 0 0 16px; color: var(--slate); font-size: 13px; }
+    
+    footer { padding: 32px 0; border-top: 1px solid var(--line); color: var(--slate); font-size: 13px; }
+
+    @media (max-width: 760px) {
+      .wrap { width: min(100% - 40px, 560px); }
+      .nav { min-height: 64px; }
+      .nav-links a:not(:last-child) { display: none; }
+      .hero-grid, .split, .split.reverse, .method-grid, .workshop-grid, .offer-grid { grid-template-columns: 1fr; gap: var(--s6); }
+      .photo-frame { min-height: 360px; }
+      .hero-actions { display: grid; }
+      .button { width: 100%; }
+      .split.reverse .photo-frame { order: -1; }
+      .contact .wrap { margin-inline: auto; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#innhold">Hopp til innhold</a>
+  
+  <header>
+    <nav class="nav wrap" aria-label="Hovedmeny">
+      <a class="wordmark" href="#start">HistorieBevaring</a>
+      <div class="nav-links">
+        <a href="#tilbud">Hva vi tilbyr</a>
+        <a href="#arbeidsmate">Arbeidsmåten</a>
+        <a href="#workshop">Workshop</a>
+        <a href="#kontakt">Kontakt</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="innhold">
+
+    <!-- 1. Hero -->
+    <section class="hero wrap" id="start">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">HISTORIEBEVARING · FORSØK</p>
+          <h1>Fagmetode og verktøystøtte til historiematerialet ditt.</h1>
+          <p class="lead">Vi har kompetanse på arkiv, kunstig intelligens og kommunikasjon. Nå ønsker vi å teste ut om det er interesse for et tilbud som kombinerer disse tre fagfeltene.</p>
+          <p class="body-copy" style="color:var(--slate); margin-top:-16px; margin-bottom:24px;">Arkivene og kildene er de samme som før, men nye verktøy gjør at du kan gjøre mer av grovarbeidet selv. Du står for kildearbeidet, vurderingene og sammenstillingen – vi viser hvordan du navigerer i kildene og hvordan teknologien kan ta den mekaniske sorteringen.</p>
+          <div class="hero-actions">
+            <a class="button" href="#kontakt">Ta kontakt</a>
+            <a class="button ghost" href="#tilbud">Se arbeidsdelingen</a>
+          </div>
+        </div>
+        
+        <!-- Bildeflate: Rolig arkivbord -->
+        <figure class="photo-frame" tabindex="0" aria-label="Bildeplassholder: Notatark og fotolomme på et arbeidsbord.">
+          <div class="photo-tag">ARBEIDSBORD</div>
+          
+          <svg style="position: absolute; inset:0; width:100%; height:100%;" viewBox="0 0 400 480" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="#E3DACB"/>
+            <g transform="translate(60, 110) rotate(-2)">
+              <rect width="280" height="250" fill="#FCFAF5" stroke="#CDC3B1" stroke-width="1" filter="drop-shadow(2px 6px 12px rgba(0,0,0,0.06))"/>
+              <rect x="24" y="24" width="70" height="85" fill="#DDD5C5" stroke="#C4B8A2" stroke-width="1"/>
+              <circle cx="59" cy="55" r="18" fill="#525E5C" opacity="0.3"/>
+              <path d="M42 95 C42 75, 76 75, 76 95" fill="#525E5C" opacity="0.3"/>
+              
+              <text x="110" y="48" font-family="'Atkinson Hyperlegible Next', sans-serif" font-size="17" font-weight="700" fill="#182222">Hva kan dette</text>
+              <text x="110" y="70" font-family="'Atkinson Hyperlegible Next', sans-serif" font-size="17" font-weight="700" fill="#182222">fortelle?</text>
+              
+              <line x1="24" y1="130" x2="256" y2="130" stroke="#CDC3B1" stroke-width="1"/>
+              <text x="24" y="160" font-family="'Atkinson Hyperlegible Next', sans-serif" font-size="14" fill="#525E5C">Begynn med det du allerede har.</text>
+              <rect x="244" y="214" width="8" height="8" fill="#B4863D"/>
+            </g>
+          </svg>
+
+          <!-- Rollover -->
+          <div class="rollover-layer">
+            <span class="eyebrow" style="margin-bottom:6px;">UTGANGSPUNKTET</span>
+            <h4>Ett ekte spor er nok</h4>
+            <p>Et ukjent fotografi, en eiendom, en gjenstand eller et brev. Du trenger ikke ha oversikten på forhånd for å begynne å lete.</p>
+            <div class="rollover-cue">Vi hjelper med å formulere de første gode spørsmålene.</div>
+          </div>
+
+          <figcaption style="font-size:12px; color:var(--slate); z-index:2;">
+            Bildeplassholder: Fotoomslag og notatbok på et lyst bord.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 2. Hva vi kan hjelpe med -->
+    <section class="offer-section" id="tilbud">
+      <div class="wrap">
+        <div class="eyebrow">ARBEIDSDELING</div>
+        <h2>Hvordan vi jobber sammen</h2>
+        <p class="body-copy">
+          Målet er at du skal sitte i førersetet for din egen historie. Vi deler arbeidet ryddig:
+        </p>
+
+        <div class="offer-grid">
+          
+          <div class="offer-card">
+            <div class="eyebrow" style="margin-bottom:4px;">01 · DET DU GJØR SELV</div>
+            <h3>Kildearbeid og innhold</h3>
+            <p>Du søker gjennom eget materiale, leser kildene og setter sammen historien. Du kjenner menneskene, konteksten og hva som er viktig å bevare.</p>
+          </div>
+
+          <div class="offer-card">
+            <div class="eyebrow" style="margin-bottom:4px;">02 · DET VERKTØYENE GJØR</div>
+            <h3>Mekanisk sortering og oversikt</h3>
+            <p>Verktøyene sorterer råtekst, henter ut datoer og steder, lager tidslinjer og rydder i store notatmengder så du slipper uker med manuelt grovarbeid.</p>
+          </div>
+
+          <div class="offer-card">
+            <div class="eyebrow" style="margin-bottom:4px;">03 · DET VI BIDRAR MED</div>
+            <h3>Fagkunnskap og veiledning</h3>
+            <p>Vi bidrar med arkivfaglig rettledning når du står fast i kildene, opplæring i relevante KI-verktøy, og råd om formidling og struktur.</p>
+          </div>
+
+          <div class="offer-card">
+            <div class="eyebrow" style="margin-bottom:4px;">04 · KILDEFORSTÅELSE</div>
+            <h3>Ingen mirakler eller oppdiktede svar</h3>
+            <p>Vi skiller fakta fra antakelser. Arkiver har hull, og verktøy forstår ikke lokalhistorie alene. Hvert funn må kontrolleres mot originalen.</p>
+          </div>
+
+        </div>
+
+        <div style="margin-top: 32px; padding: 24px; background: var(--paper); border: 1px solid var(--line); display: grid; gap: 8px;">
+          <div class="eyebrow" style="margin-bottom: 2px;">PILOT</div>
+          <h3 style="font-size: 18px; margin-bottom: 4px;">Uforpliktende tilbakemelding</h3>
+          <p class="body-copy" style="font-size: 16px; margin: 0;">
+            Dette er et forsøk for å se om det er behov for denne typen faglig og teknologisk drahjelp. Har du et materiale eller et spørsmål, ta gjerne kontakt.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Spor: Start med det du allerede har -->
+    <section class="section">
+      <div class="wrap split">
+        <figure class="photo-frame image-wide" tabindex="0" aria-label="Bildeplassholder: Mappe og materialspor på et bord.">
+          <div class="photo-tag">SPOR 02 · MATERIALET</div>
+          
+          <svg style="position: absolute; inset:0; width:100%; height:100%;" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="#E1D8C7"/>
+            <g transform="translate(80, 70) rotate(1.5)">
+              <rect width="340" height="250" fill="#EDE4D4" stroke="#CDC3B1" stroke-width="1" filter="drop-shadow(2px 6px 14px rgba(0,0,0,0.05))"/>
+              <rect x="24" y="24" width="120" height="10" fill="#182222"/>
+              <line x1="24" y1="56" x2="310" y2="56" stroke="#CDC3B1" stroke-width="1"/>
+              <line x1="24" y1="76" x2="260" y2="76" stroke="#CDC3B1" stroke-width="1"/>
+              <line x1="24" y1="96" x2="280" y2="96" stroke="#CDC3B1" stroke-width="1"/>
+              <rect x="306" y="216" width="8" height="8" fill="#7A3E34"/>
+            </g>
+          </svg>
+
+          <div class="rollover-layer">
+            <span class="eyebrow" style="margin-bottom:6px;">MATERIALET</span>
+            <h4>Hva vet vi med sikkerhet?</h4>
+            <p>Vi går gjennom hva som finnes av originale papirer, bilder eller opptegnelser, og skiller sikre opplysninger fra antakelser.</p>
+            <div class="rollover-cue">Eget materiale forblir trygt hos deg.</div>
+          </div>
+
+          <figcaption style="font-size:12px; color:var(--slate); z-index:2;">
+            Bildeplassholder: Mappe og materialspor på et arbeidsbord.
+          </figcaption>
+        </figure>
+
+        <div class="copy-panel">
+          <p class="eyebrow">MATERIALET</p>
+          <h2>Du trenger ikke ha alt klart.</h2>
+          <p class="body-copy">Det er nok å starte med en enkel detalj – et navn på et skjøte, en hendelse i lokalavisen eller en muntlig fortelling. Målet er å finne ut hvilken tråd du vil nøste i.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Metode (Mørk flate) -->
+    <section class="section method" id="arbeidsmate">
+      <div class="wrap method-grid">
+        <div>
+          <p class="eyebrow">ARBEIDSMÅTE</p>
+          <h2 style="color:var(--paper-light);">AI hjelper oss med grovarbeidet. Mennesket har ansvaret for sannheten.</h2>
+          <p class="body-copy">Språkmodeller og digitale verktøy er effektive til å transkribere, trekke ut stikkord og foreslå sammenhenger. Men AI forstår ikke lokal kontekst alene og kan dikte opp opplysninger. Derfor må alle funn forankres i kildene, og formidlingen gjøres i tett dialog med deg.</p>
+        </div>
+        <aside class="method-quote">Vi bruker AI som et praktisk verktøy for å spare tid – aldri som en erstatning for kildekritikk og menneskelig dømmekraft.</aside>
+      </div>
+    </section>
+
+    <!-- 5. Verkstedet i Kristiansand -->
+    <section class="section" id="workshop">
+      <div class="wrap workshop-grid">
+        <div>
+          <p class="eyebrow">VERKSTED · KRISTIANSAND</p>
+          <h2>En rolig start på din egen leting.</h2>
+          <p class="lead">En mulig første pilot er et lite verksted på omtrent to og en halv time.</p>
+          <p class="fineprint">Dette er en interesseinvitasjon, ikke et bekreftet arrangement. Tid, sted og kapasitet bestemmes først når vi vet om det er grunnlag for en pilot.</p>
+        </div>
+
+        <div>
+          <ol class="steps">
+            <li>
+              <span class="step-no">01</span>
+              <div>
+                <h3>Ta med ett spørsmål eller dokument</h3>
+                <p>Et gammelt brev, et bilde, en eiendom eller en historie du lurer på.</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-no">02</span>
+              <div>
+                <h3>Lær enkle triks og metoder</h3>
+                <p>Vi viser praktiske søkegrep i arkivene, og hvordan enkel AI-støtte kan hjelpe med tyding og sortering uten å rote det til.</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-no">03</span>
+              <div>
+                <h3>Gjør det selv – eller kom tilbake</h3>
+                <p>Gå hjem med enkle triks du kan bruke selv. Trenger du mer hjelp senere, kan du komme tilbake til oss for videre bistand.</p>
+              </div>
+            </li>
+          </ol>
+
+          <aside class="finding-box">
+            <h3>Hva du sitter igjen med</h3>
+            <ul>
+              <li>Enkle triks og søkemetoder du kan ta med hjem og bruke i eget tempo</li>
+              <li>Erfaring med trygg og nøktern bruk av AI på historisk materiale</li>
+              <li>En konkret kildeliste og retning for videre leting</li>
+              <li>Mulighet til å komme tilbake til oss for mer hjelp hvis du står fast</li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+      
+      <div class="wrap" style="margin-top:var(--s6);">
+        <p class="fineprint">
+          Du velger selv hva du deler. Vi bruker nøytrale eksempler i fellesskap. Fakta, samtykke, publisering og bevaring av eget materiale er ditt ansvar.<br><br>
+          <strong>Om tid og kostnad:</strong> Vi lover ikke at du finner alle svar på to og en halv time, men du lærer metoden og verktøyene. Å gå i dybden tar tid – både din tid og vår tid. Dersom du senere ønsker at vi skal gjøre større letearbid, tyding eller formidling for deg, avtaler vi omfang og kostnad nærmere på forhånd.
+        </p>
+      </div>
+    </section>
+
+    <!-- 6. Om oss (Plassholder inntil videre) -->
+    <section class="section" style="border-top: 1px solid var(--line);">
+      <div class="wrap split">
+        <figure class="photo-frame" tabindex="0" aria-label="Bildeplassholder: Nøytralt verkstedbord.">
+          <div class="photo-tag">FAGLIG VERKSTED</div>
+          
+          <svg style="position: absolute; inset:0; width:100%; height:100%;" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="#E3DACB"/>
+            <g transform="translate(60, 80)">
+              <rect width="280" height="180" fill="#FCFAF5" stroke="#CDC3B1" stroke-width="1"/>
+              <text x="24" y="38" font-family="'Atkinson Hyperlegible Next', sans-serif" font-size="11" font-weight="800" fill="#182222" letter-spacing=".08em">FAGMILJØ</text>
+              <line x1="24" y1="56" x2="250" y2="56" stroke="#CDC3B1" stroke-width="1"/>
+              <line x1="24" y1="76" x2="200" y2="76" stroke="#CDC3B1" stroke-width="1"/>
+              <rect x="232" y="136" width="8" height="8" fill="#B4863D"/>
+            </g>
+          </svg>
+
+          <figcaption style="font-size:12px; color:var(--slate); z-index:2;">
+            Bildeplassholder: Et nøytralt verkstedbord med skriveark og mapper.
+          </figcaption>
+        </figure>
+
+        <div class="copy-panel people-copy">
+          <p class="eyebrow">OM OSS</p>
+          <h2>Arkivblikk og kvalitet i ekte oppgaver.</h2>
+          <p class="body-copy">
+            Vi arbeider med spørsmål, materiale og kildevurderinger som må tåle at noen ser etter. Full presentasjon av fagmiljøet og metodeverter oppdateres før offentlig publisering.
+          </p>
+          
+          <div style="margin-top:24px; padding:16px; background:var(--paper-light); border:1px solid var(--line); font-size:14px; color:var(--slate);">
+            <strong>Metodevert:</strong> Lars Erik Brekne Johnsen · Kristiansand<br>
+            <span style="font-size:12px; color:var(--slate-light);">Ytterligere samarbeidspartnere og roller avklares før lansering.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Kontakt -->
+    <section class="section contact" id="kontakt">
+      <div class="wrap">
+        <p class="eyebrow">KONTAKT</p>
+        <h2>Har du et historiemateriale du vil se nærmere på?</h2>
+        <p class="lead">Dette er et forsøk på å se om det er interesse for et tilbud som kombinerer arkiv, kunstig intelligens og kommunikasjon. Ta gjerne kontakt og fortell hva slags materiale eller spørsmål du har.</p>
+        
+        <div class="hero-actions">
+          <a class="button" href="mailto:lars.erik@breknejohnsen.no?subject=HistorieBevaring">Ta kontakt</a>
+        </div>
+        
+        <div class="contact-details">
+          <span>Telefon: [sett inn nummer]</span>
+          <span>E-post: [sett inn e-post]</span>
+        </div>
+
+        <details>
+          <summary>Før publisering må dette avklares</summary>
+          <div class="open-points">
+            <span>[?] Varighet, dato, sted og kapasitet.</span>
+            <span>[?] Faktisk telefonnummer og e-post.</span>
+            <span>[?] Navn, roller og bildebruk for medvirkende.</span>
+            <span>[?] Rettigheter til foto, film og annet materiale.</span>
+          </div>
+        </details>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="wrap">
+      HistorieBevaring · v3 intern skisse · statisk side med plassholdere og rolige kildemarginaler
+    </div>
+  </footer>
+</body>
+</html>

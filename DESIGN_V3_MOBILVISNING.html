@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1F2B2B">
+  <title>HistorieBevaring · Design v3</title>
+  <style>
+    :root {
+      --paper: #F4EFE4;
+      --paper-light: #FCFAF5;
+      --ink: #1F2B2B;
+      --slate: #54605E;
+      --line: #CDC3B1;
+      --ochre: #B4863D;
+      --brick: #87483D;
+      --moss: #69725C;
+      --space-1: 8px;
+      --space-2: 16px;
+      --space-3: 24px;
+      --space-4: 32px;
+      --space-5: 56px;
+      --space-6: 72px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Atkinson Hyperlegible Next", Arial, sans-serif;
+      font-size: 17px;
+      line-height: 1.55;
+    }
+    a { color: inherit; text-underline-offset: 3px; }
+    a:focus-visible, summary:focus-visible {
+      outline: 3px solid var(--ochre);
+      outline-offset: 4px;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      gap: var(--space-2);
+      align-items: center;
+      min-height: 60px;
+      padding: 12px 20px;
+      background: rgba(252, 250, 245, .97);
+      border-bottom: 1px solid var(--line);
+    }
+    .wordmark { font-weight: 800; letter-spacing: -.02em; }
+    .version { color: var(--slate); font-size: 13px; }
+    main { width: min(100%, 720px); margin: 0 auto; }
+    .section { padding: var(--space-6) 20px; border-bottom: 1px solid var(--line); }
+    .section:last-child { border-bottom: 0; }
+    .eyebrow { margin: 0 0 12px; color: var(--brick); font-size: 11px; font-weight: 800; letter-spacing: .1em; }
+    .marker { display: inline-block; width: 8px; height: 8px; margin-right: 8px; background: var(--ochre); }
+    h1, h2, h3 { margin: 0; line-height: 1.04; letter-spacing: -.035em; }
+    h1 { max-width: 12ch; font-size: clamp(42px, 12vw, 72px); }
+    h2 { max-width: 16ch; font-size: clamp(30px, 8vw, 46px); }
+    h3 { font-size: 20px; }
+    p { max-width: 58ch; margin: 0; }
+    .lead { margin-top: var(--space-3); font-size: 21px; line-height: 1.38; }
+    .copy { display: grid; gap: var(--space-2); margin-top: var(--space-3); }
+    .button {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      min-height: 52px;
+      margin-top: var(--space-4);
+      padding: 14px 20px;
+      background: var(--brick);
+      color: var(--paper-light);
+      font-weight: 800;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+    .button:hover { background: var(--ink); }
+    .jump { display: inline-block; margin-top: var(--space-2); color: var(--slate); font-weight: 700; }
+    .image-placeholder {
+      display: grid;
+      min-height: 260px;
+      margin-top: var(--space-4);
+      padding: var(--space-3);
+      place-items: center;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(135deg, rgba(180,134,61,.16), transparent 48%),
+        repeating-linear-gradient(0deg, transparent 0 26px, rgba(31,43,43,.06) 27px 28px),
+        #E9E0D0;
+      color: var(--slate);
+      text-align: center;
+      font-size: 14px;
+    }
+    .caption { margin-top: 10px; color: var(--slate); font-size: 13px; }
+    .rule { display: flex; gap: 8px; margin: 0 0 var(--space-3); color: var(--slate); font-size: 13px; }
+    .rule span:not(:last-child)::after { content: "/"; margin-left: 8px; color: var(--ochre); }
+    .method { background: var(--ink); color: var(--paper-light); }
+    .method .eyebrow { color: #E9C887; }
+    .method p { color: #E3E4DD; }
+    .list { display: grid; gap: 0; margin: var(--space-4) 0 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+    .list li { padding: 20px 0; border-bottom: 1px solid var(--line); }
+    .list strong { display: block; margin-bottom: 4px; }
+    .finding-box {
+      margin-top: var(--space-4);
+      padding: var(--space-3);
+      border: 1px solid var(--line);
+      background: var(--paper-light);
+    }
+    .finding-box h3 { margin-bottom: 12px; }
+    .finding-box ul { margin: 0; padding-left: 20px; }
+    .finding-box li + li { margin-top: 8px; }
+    .note { margin-top: var(--space-3); color: var(--slate); font-size: 14px; }
+    .contact { background: var(--paper-light); }
+    .contact-lines { display: grid; gap: 8px; margin-top: var(--space-4); font-weight: 700; }
+    details { margin-top: var(--space-4); border-top: 1px solid var(--line); }
+    summary { padding: 16px 0; cursor: pointer; font-weight: 800; }
+    .open-points { display: grid; gap: 12px; padding-bottom: 8px; color: var(--slate); }
+    footer { padding: 32px 20px; color: var(--slate); font-size: 13px; text-align: center; }
+    @media (min-width: 680px) {
+      .section { padding: 112px 48px; }
+      .topbar { padding-left: 48px; padding-right: 48px; }
+      .image-placeholder { min-height: 360px; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <span class="wordmark">HistorieBevaring</span>
+    <span class="version">Design v3 · intern lesing</span>
+  </header>
+
+  <main>
+    <section class="section" id="start">
+      <p class="eyebrow"><span class="marker"></span>SPOR 01 · HISTORIEBEVARING</p>
+      <h1>Har du noe du gjerne skulle funnet ut av?</h1>
+      <p class="lead">Et bilde, et navn, en fortelling eller en gjenstand kan være starten. Vi hjelper deg å lete på en ryddig måte.</p>
+      <a class="button" href="#workshop">Meld interesse for workshop i Kristiansand</a>
+      <a class="jump" href="#arbeidsmate">Se arbeidsmåten ↓</a>
+      <div class="image-placeholder" role="img" aria-label="Plassholder: fotoomslag, tom etikett og åpen notatbok på et lyst arbeidsbord.">[BILDEPLASSHOLDER · fotoomslag, tom etikett og notatbok]</div>
+      <p class="caption">Hero-bilde: dekorativt når budskapet står i teksten. Erstattes bare med rettighetsklarert materiale.</p>
+    </section>
+
+    <section class="section">
+      <p class="eyebrow"><span class="marker"></span>SPOR 02 · MATERIALET</p>
+      <h2>Du trenger ikke ha alt klart.</h2>
+      <div class="copy"><p>Det er nok å starte med ett bilde, en fortelling, et dokument eller et spørsmål.</p></div>
+      <div class="image-placeholder" role="img" aria-label="Plassholder: hender legger et fotoomslag og en merket mappe på et bord.">[BILDEPLASSHOLDER · hender, mappe og tre fiktive materialspor]</div>
+      <p class="caption">Ikke bruk private familieopplysninger, gjenkjennbare personer eller medieutklipp uten klarert bruk.</p>
+    </section>
+
+    <section class="section">
+      <p class="eyebrow"><span class="marker"></span>SPOR 03 · SØK OG FINN</p>
+      <div class="rule"><span>spørre</span><span>finne</span><span>notere</span></div>
+      <h2>Se hva materialet faktisk sier.</h2>
+      <div class="copy"><p>Vi bruker arkivblikk, søk og enkel struktur for å skille spor fra antakelser – og for å se hva som fortsatt må undersøkes.</p></div>
+      <div class="image-placeholder" role="img" aria-label="Plassholder: arbeidsbord med lupe, mappeetikett, notater og anonymisert skjerm.">[BILDEPLASSHOLDER · lupe, notater, mappeetikett og anonymisert skjerm]</div>
+    </section>
+
+    <section class="section method" id="arbeidsmate">
+      <p class="eyebrow"><span class="marker"></span>ARBEIDSMÅTE</p>
+      <h2>AI kan hjelpe oss å arbeide. Mennesket avgjør hva som holder.</h2>
+      <div class="copy"><p>AI kan hjelpe med å formulere spørsmål, sortere et lite grunnlag og lage førsteutkast. Kilder, sammenheng, usikkerhet og deling krever fortsatt menneskelig vurdering.</p></div>
+    </section>
+
+    <section class="section" id="workshop">
+      <p class="eyebrow"><span class="marker"></span>VERKSTED · KRISTIANSAND</p>
+      <h2>En rolig start på din egen leting.</h2>
+      <p class="lead">En mulig første pilot er et lite verksted på omtrent to og en halv time.</p>
+      <ol class="list">
+        <li><strong>1. Ta med ett spor</strong>Et bilde, en historie eller et spørsmål.</li>
+        <li><strong>2. Arbeid med metoden</strong>Avgrens, finn fram, sorter og prøv praktiske AI-spørsmål med kontrollpunkter.</li>
+        <li><strong>3. Gå hjem med en retning</strong>En intervjuguide eller søkeplan, enkel sporoversikt og ett neste steg.</li>
+      </ol>
+      <div class="finding-box">
+        <h3>Du skal sitte igjen med</h3>
+        <ul>
+          <li>ett avgrenset lete- eller historiespørsmål</li>
+          <li>en enkel oversikt over materiale, kilder og usikkerhet</li>
+          <li>en kort intervju- eller søkeguide</li>
+          <li>praktiske AI-prompter med kontrollpunkter</li>
+          <li>en realistisk plan for den neste uken</li>
+        </ul>
+      </div>
+      <p class="note">Deltakerne velger selv hva de deler. Vi bruker nøytrale eksempler i fellesskap. Ansvar for fakta, samtykke, publisering og bevaring av eget materiale blir hos familien.</p>
+    </section>
+
+    <section class="section">
+      <p class="eyebrow"><span class="marker"></span>HVERDAGSARBEID</p>
+      <h2>Praktisk AI og kvalitet i ekte oppgaver.</h2>
+      <div class="copy"><p>Vi arbeider med spørsmål, materiale og vurderinger som må tåle at noen ser etter. Familiehistorie er ett konkret utgangspunkt.</p></div>
+      <div class="image-placeholder" role="img" aria-label="Plassholder: en person gjør notater ved et arbeidsbord uten private opplysninger.">[BILDEPLASSHOLDER · person eller hender i arbeid]</div>
+      <p class="caption">Navn, roller og eventuelle bilder av Lars, Harde eller andre brukes først etter konkret godkjenning.</p>
+    </section>
+
+    <section class="section contact" id="kontakt">
+      <p class="eyebrow"><span class="marker"></span>KONTAKT</p>
+      <h2>Vil du finne ut hva som kan ligge i ditt materiale?</h2>
+      <div class="copy"><p>Gi beskjed dersom du vil høre mer om et mulig verksted i Kristiansand.</p></div>
+      <a class="button" href="#kontakt">Meld interesse for workshop i Kristiansand</a>
+      <div class="contact-lines">
+        <span>Telefon: [sett inn nummer]</span>
+        <span>E-post: [sett inn e-post]</span>
+      </div>
+      <details>
+        <summary>Før publisering må dette avklares</summary>
+        <div class="open-points">
+          <span>[?] Varighet, dato, sted, kapasitet og pris.</span>
+          <span>[?] Faktisk telefonnummer og e-post.</span>
+          <span>[?] Navn, roller og bildebruk for medvirkende.</span>
+          <span>[?] Rettigheter til foto, film og annet materiale.</span>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <footer>Intern mobilvisning av design-v3.md · Ikke en publiseringsklar nettside.</footer>
+</body>
+</html>

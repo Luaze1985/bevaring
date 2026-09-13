@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="HistorieBevaring – arkivkompetanse, søk og praktisk AI for å finne fram i ekte materiale.">
+  <meta name="theme-color" content="#1F2B2B">
+  <title>HistorieBevaring – Spor og funn</title>
+  <style>
+    :root {
+      --paper: #F4EFE4;
+      --paper-light: #FCFAF5;
+      --ink: #1F2B2B;
+      --slate: #54605E;
+      --line: #CDC3B1;
+      --ochre: #B4863D;
+      --brick: #87483D;
+      --moss: #69725C;
+      --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px;
+      --s6: 32px; --s7: 40px; --s8: 56px; --s9: 72px; --s10: 112px;
+      --font: "Atkinson Hyperlegible Next", Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font-family: var(--font); font-size: 17px; line-height: 1.55; }
+    a { color: inherit; text-underline-offset: 3px; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    :focus-visible { outline: 3px solid var(--ochre); outline-offset: 4px; }
+    .skip { position: absolute; top: -80px; left: 16px; z-index: 20; padding: 12px 16px; color: var(--paper-light); background: var(--ink); }
+    .skip:focus { top: 16px; }
+    .wrap { width: min(1180px, calc(100% - 40px)); margin-inline: auto; }
+    .eyebrow { display: flex; gap: 8px; align-items: center; margin: 0 0 var(--s3); color: var(--brick); font-size: 11px; font-weight: 800; letter-spacing: .1em; line-height: 1.2; }
+    .eyebrow::before { width: 8px; height: 8px; background: var(--ochre); content: ""; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 12ch; margin-bottom: var(--s5); font-size: clamp(46px, 7vw, 84px); font-weight: 800; line-height: .98; letter-spacing: -.055em; }
+    h2 { max-width: 17ch; margin-bottom: var(--s4); font-size: clamp(32px, 4vw, 52px); font-weight: 800; line-height: 1.04; letter-spacing: -.045em; }
+    h3 { margin-bottom: 8px; font-size: 22px; line-height: 1.18; letter-spacing: -.025em; }
+    .lead { max-width: 49ch; color: var(--slate); font-size: clamp(19px, 2vw, 24px); line-height: 1.4; }
+    .body-copy { max-width: 57ch; color: var(--slate); }
+    .section { padding: var(--s10) 0; }
+    .button { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 14px 20px; border: 1px solid var(--brick); border-radius: 4px; color: var(--paper-light); background: var(--brick); font: inherit; font-size: 16px; font-weight: 800; text-align: center; text-decoration: none; transition: background .16s ease, color .16s ease, transform .16s ease; }
+    .button:hover { color: var(--paper-light); background: var(--ink); border-color: var(--ink); transform: translateY(-2px); }
+    .button.ghost { color: var(--ink); border-color: var(--line); background: transparent; }
+    .button.ghost:hover { color: var(--paper-light); background: var(--ink); border-color: var(--ink); }
+    .text-link { display: inline-block; margin-top: var(--s4); font-weight: 800; }
+    .text-link::after { content: " →"; }
+
+    /* Navigation */
+    header { position: sticky; top: 0; z-index: 10; border-bottom: 1px solid var(--line); background: rgb(252 250 245 / 96%); backdrop-filter: blur(10px); }
+    .nav { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: var(--s4); }
+    .wordmark { color: var(--ink); font-size: 18px; font-weight: 800; letter-spacing: -.03em; text-decoration: none; }
+    .wordmark::after { color: var(--ochre); content: " ·"; }
+    .nav-links { display: flex; align-items: center; gap: 24px; }
+    .nav-links a { font-size: 15px; font-weight: 700; text-decoration: none; }
+    .nav-links a:hover { text-decoration: underline; }
+
+    /* Hero */
+    .hero { padding: clamp(72px, 12vw, 144px) 0 var(--s10); }
+    .hero-grid { display: grid; grid-template-columns: 7fr 5fr; gap: clamp(40px, 8vw, 96px); align-items: center; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: var(--s3); margin-top: var(--s6); }
+    .hero-photo { position: relative; min-height: 520px; overflow: hidden; border: 1px solid var(--line); background: #E7DDCB; }
+    .hero-photo::before { position: absolute; inset: 0; background: linear-gradient(135deg, rgb(180 134 61 / 26%), transparent 55%), repeating-linear-gradient(0deg, transparent 0 30px, rgb(31 43 43 / 7%) 31px 32px); content: ""; }
+    .paper { position: absolute; top: 15%; left: 12%; width: 74%; min-height: 290px; padding: 32px; border: 1px solid #D6C9B5; background: var(--paper-light); box-shadow: 16px 18px 0 rgb(31 43 43 / 9%); transform: rotate(-3deg); }
+    .paper small { display: block; margin-bottom: var(--s5); color: var(--brick); font-size: 11px; font-weight: 800; letter-spacing: .1em; }
+    .paper-question { max-width: 10ch; font-size: 34px; font-weight: 800; line-height: 1; letter-spacing: -.04em; }
+    .paper-line { height: 1px; margin-top: 24px; background: var(--line); }
+    .paper-note { margin-top: 16px; color: var(--slate); font-size: 14px; }
+    .tag { position: absolute; display: inline-flex; gap: 7px; align-items: center; padding: 9px 11px; color: var(--paper-light); background: var(--ink); font-size: 12px; font-weight: 800; }
+    .tag::before { width: 7px; height: 7px; background: var(--ochre); content: ""; }
+    .tag.top { top: 8%; right: 8%; }
+    .tag.bottom { right: 9%; bottom: 8%; background: var(--brick); }
+    .hero-caption { position: absolute; bottom: 20px; left: 22px; width: 65%; color: var(--slate); font-size: 12px; }
+
+    /* Photo placeholders */
+    .photo { position: relative; overflow: hidden; min-height: 520px; border: 1px solid var(--line); background: #E6DECE; }
+    .photo::before, .photo::after { position: absolute; content: ""; }
+    .photo::before { inset: 0; background: linear-gradient(120deg, transparent 0 50%, rgb(105 114 92 / 25%) 51% 100%), repeating-linear-gradient(90deg, rgb(31 43 43 / 4%) 0 1px, transparent 1px 22px); }
+    .photo::after { left: 14%; bottom: -3%; width: 60%; height: 67%; border: 1px solid #BDAF99; background: rgb(252 250 245 / 78%); transform: rotate(5deg); }
+    .photo-label { position: absolute; z-index: 1; top: 24px; left: 24px; padding: 9px 11px; color: var(--ink); border: 1px solid var(--line); background: var(--paper-light); font-size: 12px; font-weight: 800; }
+    .photo-caption { position: absolute; z-index: 2; right: 24px; bottom: 22px; left: 24px; color: var(--slate); font-size: 13px; }
+    .photo-search::before { background: radial-gradient(circle at 68% 33%, transparent 0 44px, var(--ink) 45px 52px, transparent 53px), linear-gradient(130deg, rgb(180 134 61 / 28%), transparent 48%), repeating-linear-gradient(0deg, transparent 0 28px, rgb(31 43 43 / 8%) 29px 30px); }
+    .photo-search::after { left: 12%; bottom: 12%; width: 58%; height: 48%; transform: rotate(-4deg); }
+    .photo-workshop::before { background: linear-gradient(150deg, rgb(135 72 61 / 22%), transparent 48%), repeating-linear-gradient(90deg, transparent 0 62px, rgb(31 43 43 / 7%) 63px 64px); }
+    .photo-workshop::after { bottom: 10%; left: 10%; width: 80%; height: 52%; border-radius: 50%; transform: none; }
+
+    /* Editorial sections */
+    .split { display: grid; grid-template-columns: 7fr 5fr; gap: clamp(32px, 7vw, 88px); align-items: center; }
+    .split.reverse { grid-template-columns: 5fr 7fr; }
+    .image-wide { min-height: min(65vw, 680px); }
+    .copy-panel { padding: var(--s7) 0; }
+    .caption { margin-top: 12px; color: var(--slate); font-size: 13px; }
+    .index-line { display: flex; gap: 8px; margin: 0 0 var(--s5); color: var(--slate); font-size: 13px; font-weight: 700; }
+    .index-line span:not(:last-child)::after { margin-left: 8px; color: var(--ochre); content: "/"; }
+
+    /* Method */
+    .method { color: var(--paper-light); background: var(--ink); }
+    .method .eyebrow { color: #E7C985; }
+    .method .eyebrow::before { background: #E7C985; }
+    .method .body-copy { color: #E1E5DE; }
+    .method-grid { display: grid; grid-template-columns: 8fr 4fr; gap: 64px; align-items: end; }
+    .method-quote { padding: 24px; border-top: 1px solid rgb(252 250 245 / 35%); border-bottom: 1px solid rgb(252 250 245 / 35%); color: #E7C985; font-size: 18px; font-weight: 800; line-height: 1.3; }
+
+    /* Workshop */
+    .workshop-grid { display: grid; grid-template-columns: 5fr 7fr; gap: clamp(32px, 7vw, 88px); align-items: start; }
+    .steps { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+    .steps li { display: grid; grid-template-columns: 40px 1fr; gap: 16px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+    .step-no { color: var(--brick); font-weight: 800; }
+    .steps p { margin: 4px 0 0; color: var(--slate); }
+    .finding-box { margin-top: var(--s6); padding: var(--s5); border: 1px solid var(--line); background: var(--paper-light); }
+    .finding-box h3 { margin-bottom: 14px; }
+    .finding-box ul { margin: 0; padding-left: 20px; }
+    .finding-box li + li { margin-top: 7px; }
+    .fineprint { max-width: 63ch; margin-top: var(--s5); color: var(--slate); font-size: 14px; }
+
+    /* Team and contact */
+    .people-copy { max-width: 52ch; }
+    .role-lines { margin-top: var(--s6); border-top: 1px solid var(--line); }
+    .role-line { display: flex; justify-content: space-between; gap: 16px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+    .role-line span:last-child { color: var(--slate); text-align: right; }
+    .contact { background: var(--paper-light); }
+    .contact .wrap { max-width: 760px; margin-left: max(20px, calc((100% - 1180px) / 2)); }
+    .contact-details { display: grid; gap: 8px; margin-top: var(--s6); padding-top: var(--s5); border-top: 1px solid var(--line); font-size: 18px; font-weight: 800; }
+    details { margin-top: var(--s7); border-top: 1px solid var(--line); }
+    summary { padding: 16px 0; cursor: pointer; font-weight: 800; }
+    .open-points { display: grid; gap: 8px; padding: 0 0 16px; color: var(--slate); font-size: 14px; }
+    footer { padding: 32px 0; border-top: 1px solid var(--line); color: var(--slate); font-size: 13px; }
+
+    @media (max-width: 760px) {
+      .wrap { width: min(100% - 40px, 560px); }
+      .nav { min-height: 64px; }
+      .nav-links { gap: 14px; }
+      .nav-links a:not(:last-child) { display: none; }
+      .section { padding: var(--s9) 0; }
+      .hero { padding-top: 72px; }
+      .hero-grid, .split, .split.reverse, .method-grid, .workshop-grid { grid-template-columns: 1fr; gap: var(--s6); }
+      .hero-photo { min-height: 390px; }
+      .photo { min-height: 390px; }
+      .paper { padding: 24px; }
+      .paper-question { font-size: 29px; }
+      .hero-actions { display: grid; }
+      .button { width: 100%; }
+      .split.reverse .photo { order: -1; }
+      .copy-panel { padding: 0; }
+      .method-grid { gap: var(--s6); }
+      .contact .wrap { margin-inline: auto; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0s !important; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#innhold">Hopp til innhold</a>
+  <header>
+    <nav class="nav wrap" aria-label="Hovedmeny">
+      <a class="wordmark" href="#start">HistorieBevaring</a>
+      <div class="nav-links">
+        <a href="#arbeidsmate">Arbeidsmåten</a>
+        <a href="#workshop">Workshop</a>
+        <a href="#kontakt">Kontakt</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="innhold">
+    <section class="hero wrap" id="start">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">SPOR 01 · HISTORIEBEVARING</p>
+          <h1>Har du noe du gjerne skulle funnet ut av?</h1>
+          <p class="lead">Et bilde, et navn, en fortelling eller en gjenstand kan være starten. Vi hjelper deg å lete på en ryddig måte.</p>
+          <div class="hero-actions">
+            <a class="button" href="#kontakt">Meld interesse for workshop i Kristiansand</a>
+            <a class="button ghost" href="#arbeidsmate">Se arbeidsmåten</a>
+          </div>
+        </div>
+        <figure class="hero-photo" aria-label="Bildeplassholder for et fotoomslag, en etikett og en notatbok på et arbeidsbord.">
+          <span class="tag top">ETT SPOR</span>
+          <div class="paper"><small>SPØRSMÅL</small><div class="paper-question">Hva kan dette fortelle?</div><div class="paper-line"></div><div class="paper-note">Begynn med det du allerede har.</div></div>
+          <span class="tag bottom">START HER</span>
+          <figcaption class="hero-caption">Bildeplassholder: fotoomslag, etikett og notatbok. Erstattes bare med rettighetsklarert materiale.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap split">
+        <figure class="photo image-wide" aria-label="Bildeplassholder for hender som arbeider med en mappe og et fotoomslag.">
+          <span class="photo-label">SPOR 02 · MATERIALET</span>
+          <figcaption class="photo-caption">Bildeplassholder: hender, mappe og fiktive materialspor. Ingen private opplysninger.</figcaption>
+        </figure>
+        <div class="copy-panel">
+          <p class="eyebrow">MATERIALET</p>
+          <h2>Du trenger ikke ha alt klart.</h2>
+          <p class="body-copy">Det er nok å starte med ett bilde, en fortelling, et dokument eller et spørsmål. Det første målet er ikke å få hele svaret, men å se hvilket spor du vil følge.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap split reverse">
+        <div class="copy-panel">
+          <p class="eyebrow">SPOR 03 · SØK OG FINN</p>
+          <p class="index-line"><span>spørre</span><span>finne</span><span>notere</span></p>
+          <h2>Se hva materialet faktisk sier.</h2>
+          <p class="body-copy">Vi bruker arkivblikk, søk og enkel struktur for å skille spor fra antakelser – og for å se hva som fortsatt må undersøkes.</p>
+        </div>
+        <figure class="photo photo-search image-wide" aria-label="Bildeplassholder for notater, lupe og mappeetikett på et arbeidsbord.">
+          <span class="photo-label">LET · FINN · NOTER</span>
+          <figcaption class="photo-caption">Bildeplassholder: lupe, mappeetikett, notater og en anonymisert skjerm med fiktiv tekst.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section method" id="arbeidsmate">
+      <div class="wrap method-grid">
+        <div>
+          <p class="eyebrow">ARBEIDSMÅTE</p>
+          <h2>AI kan hjelpe oss å arbeide. Mennesket avgjør hva som holder.</h2>
+          <p class="body-copy">AI kan hjelpe med å formulere spørsmål, sortere et lite grunnlag og lage førsteutkast. Kilder, sammenheng, usikkerhet og deling krever fortsatt menneskelig vurdering.</p>
+        </div>
+        <aside class="method-quote">Vi bruker AI som et arbeidsredskap. Ikke som en erstatning for ansvar eller dømmekraft.</aside>
+      </div>
+    </section>
+
+    <section class="section" id="workshop">
+      <div class="wrap workshop-grid">
+        <div>
+          <p class="eyebrow">VERKSTED · KRISTIANSAND</p>
+          <h2>En rolig start på din egen leting.</h2>
+          <p class="lead">En mulig første pilot er et lite verksted på omtrent to og en halv time.</p>
+          <p class="fineprint">Dette er en interesseinvitasjon, ikke et bekreftet arrangement. Tid, sted, kapasitet og pris bestemmes først når vi vet om det er grunnlag for en pilot.</p>
+        </div>
+        <div>
+          <ol class="steps">
+            <li><span class="step-no">01</span><div><h3>Ta med ett spor</h3><p>Et bilde, en historie eller et spørsmål.</p></div></li>
+            <li><span class="step-no">02</span><div><h3>Arbeid med metoden</h3><p>Avgrens, finn fram, sorter og prøv praktiske AI-spørsmål med kontrollpunkter.</p></div></li>
+            <li><span class="step-no">03</span><div><h3>Gå hjem med en retning</h3><p>En intervjuguide eller søkeplan, enkel sporoversikt og ett neste steg.</p></div></li>
+          </ol>
+          <aside class="finding-box">
+            <h3>Du skal sitte igjen med</h3>
+            <ul>
+              <li>ett avgrenset lete- eller historiespørsmål</li>
+              <li>en enkel oversikt over materiale, kilder og usikkerhet</li>
+              <li>en kort intervju- eller søkeguide</li>
+              <li>praktiske AI-prompter med kontrollpunkter</li>
+              <li>en realistisk plan for den neste uken</li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+      <div class="wrap"><p class="fineprint">Du velger selv hva du deler. Vi bruker nøytrale eksempler i fellesskap. Fakta, samtykke, publisering og bevaring av eget materiale er ditt ansvar.</p></div>
+    </section>
+
+    <section class="section">
+      <div class="wrap split">
+        <figure class="photo photo-workshop" aria-label="Bildeplassholder for et klargjort verkstedbord.">
+          <span class="photo-label">EKTE ARBEID</span>
+          <figcaption class="photo-caption">Bildeplassholder: et nøytralt verkstedbord med skriveark, mapper og blyanter.</figcaption>
+        </figure>
+        <div class="copy-panel people-copy">
+          <p class="eyebrow">HVERDAGSARBEID</p>
+          <h2>Praktisk AI og kvalitet i ekte oppgaver.</h2>
+          <p class="body-copy">Vi arbeider med spørsmål, materiale og vurderinger som må tåle at noen ser etter. Familiehistorie er ett konkret utgangspunkt.</p>
+          <div class="role-lines" aria-label="Foreløpige rolleplassholdere">
+            <div class="role-line"><strong>Lars</strong><span>metodevert · avklares før publisering</span></div>
+            <div class="role-line"><strong>Harde</strong><span>faglig samarbeid · avklares før publisering</span></div>
+            <div class="role-line"><strong>[navn]</strong><span>rolle og samtykke avklares</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section contact" id="kontakt">
+      <div class="wrap">
+        <p class="eyebrow">KONTAKT</p>
+        <h2>Vil du finne ut hva som kan ligge i ditt materiale?</h2>
+        <p class="lead">Gi beskjed dersom du vil høre mer om et mulig verksted i Kristiansand.</p>
+        <div class="hero-actions"><a class="button" href="#kontakt">Meld interesse for workshop i Kristiansand</a></div>
+        <div class="contact-details">
+          <span>Telefon: [sett inn nummer]</span>
+          <span>E-post: [sett inn e-post]</span>
+        </div>
+        <details>
+          <summary>Før publisering må dette avklares</summary>
+          <div class="open-points">
+            <span>[?] Varighet, dato, sted, kapasitet og pris.</span>
+            <span>[?] Faktisk telefonnummer og e-post.</span>
+            <span>[?] Navn, roller og bildebruk for medvirkende.</span>
+            <span>[?] Rettigheter til foto, film og annet materiale.</span>
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="wrap">HistorieBevaring · v3 intern skisse · statisk side med plassholdere</div></footer>
+</body>
+</html>

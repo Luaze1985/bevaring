@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="no" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tekstvalg for HistorieBevaring – Grill Me With Forms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --color-bg:#F4EFE4;--color-surface:#FCFAF5;--color-surface-2:#FFFFFF;
+  --color-surface-offset:#EDE5D6;--color-border:#CDC3B1;--color-divider:#D8CFBF;
+  --color-text:#182222;--color-text-muted:#525E5C;--color-text-faint:#8A9694;
+  --color-primary:#182222;--color-primary-hover:#2C3838;--color-primary-highlight:#EDE4D4;
+  --color-success:#4A6B53;--color-warning:#B4863D;--color-error:#7A3E34;
+  --color-uncertain:#B4863D;--color-uncertain-bg:#FCF8EE;
+  --space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;
+  --space-5:1.25rem;--space-6:1.5rem;--space-8:2rem;--space-10:2.5rem;
+  --space-12:3rem;--space-16:4rem;
+  --radius-sm:2px;--radius-md:4px;--radius-lg:6px;--radius-xl:8px;--radius-full:9999px;
+  --shadow-sm:0 1px 3px rgba(24,34,34,0.05);--shadow-md:0 6px 16px rgba(24,34,34,0.08);--shadow-lg:0 12px 28px rgba(24,34,34,0.12);
+  --transition:160ms cubic-bezier(.16,1,.3,1);
+  --font-body:"Atkinson Hyperlegible Next",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+[data-theme="dark"]{
+  --color-bg:#141B1B;--color-surface:#1C2525;--color-surface-2:#243030;
+  --color-surface-offset:#111717;--color-border:#384848;--color-divider:#2A3636;
+  --color-text:#F0ECE1;--color-text-muted:#A6B4B2;--color-text-faint:#6B7D7B;
+  --color-primary:#E7C985;--color-primary-hover:#F2DCA5;--color-primary-highlight:#2C352B;
+  --color-success:#6DAA45;--color-warning:#E8AF34;--color-error:#D47A6A;
+  --color-uncertain:#E8AF34;--color-uncertain-bg:#2A2618;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth;scroll-padding-top:5rem}
+body{min-height:100dvh;font-family:var(--font-body);font-size:16px;color:var(--color-text);background:var(--color-bg);line-height:1.55}
+button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
+input,textarea,select{font:inherit;color:inherit}
+a,button,[role="button"]{transition:color var(--transition),background var(--transition),border-color var(--transition),box-shadow var(--transition)}
+:focus-visible{outline:2px solid var(--color-warning);outline-offset:3px}
+
+/* HEADER */
+.site-header{position:sticky;top:0;z-index:100;background:rgba(252,250,245,0.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--color-border)}
+.header-inner{max-width:1040px;margin-inline:auto;padding:var(--space-3) var(--space-6);display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)}
+.logo{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;letter-spacing:-.02em;color:var(--color-text)}
+.logo-badge{background:var(--color-warning);width:8px;height:8px;display:inline-block}
+.header-actions{display:flex;align-items:center;gap:var(--space-3)}
+.progress-pill{display:flex;align-items:center;gap:var(--space-2);font-size:12px;font-weight:700;color:var(--color-text-muted);background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-full);padding:var(--space-1) var(--space-3)}
+.progress-fill{width:64px;height:5px;background:var(--color-divider);border-radius:var(--radius-full);overflow:hidden}
+.progress-bar{height:100%;background:var(--color-primary);border-radius:var(--radius-full);transition:width .4s ease}
+.theme-toggle{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-md);color:var(--color-text-muted);border:1px solid var(--color-border);background:var(--color-surface)}
+
+/* MAIN LAYOUT */
+.main{max-width:1040px;margin-inline:auto;padding:var(--space-8) var(--space-6) var(--space-16)}
+.intro-banner{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-6) var(--space-8);margin-bottom:var(--space-8);box-shadow:var(--shadow-sm)}
+.intro-banner h1{font-size:clamp(26px,3.5vw,36px);font-weight:800;letter-spacing:-.03em;margin-bottom:var(--space-2);color:var(--color-text)}
+.intro-banner p{color:var(--color-text-muted);font-size:15px;max-width:68ch;line-height:1.5}
+.legend{display:flex;flex-wrap:wrap;gap:var(--space-4);margin-top:var(--space-4);padding-top:var(--space-3);border-top:1px solid var(--color-divider)}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--color-text-muted)}
+.legend-dot{width:8px;height:8px;border-radius:2px}
+
+/* BLOCKS */
+.block{margin-bottom:var(--space-10)}
+.block-header{display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-4);padding-bottom:var(--space-3);border-bottom:2px solid var(--color-border)}
+.block-label{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--color-text);font-family:var(--font-mono)}
+.block-title{font-size:20px;font-weight:800;letter-spacing:-.02em}
+.block-desc{font-size:14px;color:var(--color-text-muted);margin-top:2px}
+
+/* QUESTION CARD */
+.question-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-6);margin-bottom:var(--space-4);transition:all var(--transition);box-shadow:var(--shadow-sm)}
+.question-card.answered{border-color:var(--color-primary);box-shadow:0 0 0 1px var(--color-primary)}
+.question-card.uncertain{border-color:var(--color-warning);background:var(--color-uncertain-bg)}
+.q-header{display:flex;align-items:flex-start;gap:var(--space-3);margin-bottom:var(--space-4)}
+.q-num{flex-shrink:0;width:24px;height:24px;border-radius:var(--radius-sm);background:var(--color-surface-offset);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--color-text-muted);font-family:var(--font-mono);margin-top:2px}
+.q-num.done{background:var(--color-primary);color:#fff}
+.q-num.unsure{background:var(--color-warning);color:#fff}
+.q-text{font-size:17px;font-weight:700;line-height:1.4;flex:1}
+.q-rec{font-size:13px;font-weight:600;color:var(--color-text);margin-top:var(--space-2);padding:var(--space-2) var(--space-3);background:var(--color-primary-highlight);border-radius:var(--radius-sm);border-left:3px solid var(--color-warning)}
+
+/* OPTIONS & VISUAL CARDS */
+.options{display:grid;grid-template-columns:1fr;gap:var(--space-3)}
+.option-label{display:flex;flex-direction:column;gap:8px;padding:var(--space-4);border-radius:var(--radius-md);border:1px solid var(--color-border);background:var(--color-surface-2);cursor:pointer;font-size:14px;transition:all var(--transition);position:relative}
+.option-label:hover{border-color:var(--color-primary);background:#FFFDFA}
+.option-label.selected{border-color:var(--color-primary);background:var(--color-primary-highlight);box-shadow:0 2px 8px rgba(24,34,34,0.08)}
+.option-label.recommended{border-style:dashed;border-color:var(--color-primary)}
+.option-header-row{display:flex;align-items:flex-start;gap:10px}
+.option-header-row input[type="radio"],.option-header-row input[type="checkbox"]{accent-color:var(--color-primary);width:18px;height:18px;flex-shrink:0;margin-top:2px;cursor:pointer}
+.option-title-text{font-size:15px;font-weight:800;color:var(--color-text)}
+.recommended-badge{font-size:11px;color:var(--color-text);font-weight:800;margin-left:auto;flex-shrink:0;background:var(--color-surface-offset);padding:2px 6px;border-radius:2px}
+
+.text-proposal-box{background:var(--color-surface);border-left:3px solid var(--color-warning);padding:10px 14px;font-size:14px;color:var(--color-text);line-height:1.5;margin-top:4px}
+.text-proposal-box strong{font-weight:800;}
+.text-proposal-box p{margin:4px 0 0; color:var(--color-text-muted);}
+
+/* UNCERTAIN TOGGLE */
+.uncertain-toggle{display:flex;align-items:center;gap:var(--space-2);margin-top:var(--space-4);font-size:12px;font-weight:700;color:var(--color-text-muted);cursor:pointer;padding-top:8px;border-top:1px dashed var(--color-divider)}
+.uncertain-toggle input{accent-color:var(--color-warning);cursor:pointer;width:14px;height:14px}
+.freetext{width:100%;margin-top:var(--space-3);padding:var(--space-3);background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-sm);font-size:14px;resize:vertical;min-height:60px}
+.freetext:focus{border-color:var(--color-primary);outline:none}
+
+/* SUBMIT */
+.submit-section{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-6) var(--space-8);margin-top:var(--space-8)}
+.submit-section h2{font-size:18px;font-weight:800;margin-bottom:4px}
+.submit-section p{font-size:14px;color:var(--color-text-muted);margin-bottom:var(--space-4)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:var(--radius-sm);font-size:15px;font-weight:800;transition:all var(--transition)}
+.btn-primary{background:var(--color-primary);color:#fff}
+.btn-primary:hover{background:var(--color-primary-hover)}
+.btn-secondary{background:var(--color-surface-offset);color:var(--color-text);border:1px solid var(--color-border)}
+.btn-secondary:hover{background:var(--color-surface-2)}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;padding:var(--space-4)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-lg);max-width:760px;width:100%;max-height:90dvh;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-lg)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:var(--space-4) var(--space-6);border-bottom:1px solid var(--color-divider)}
+.modal-body{flex:1;overflow-y:auto;padding:var(--space-5) var(--space-6)}
+.modal-footer{padding:var(--space-4) var(--space-6);border-top:1px solid var(--color-divider);display:flex;gap:var(--space-3);justify-content:flex-end}
+.output-area{background:var(--color-surface-offset);border:1px solid var(--color-border);border-radius:var(--radius-sm);padding:var(--space-4);font-family:var(--font-mono);font-size:12px;white-space:pre-wrap;line-height:1.6;max-height:360px;overflow-y:auto}
+.copy-toast{position:fixed;bottom:24px;right:24px;z-index:300;background:var(--color-text);color:var(--color-bg);padding:10px 18px;border-radius:var(--radius-full);font-size:13px;font-weight:700;transform:translateY(100px);opacity:0;transition:all .3s}
+.copy-toast.show{transform:translateY(0);opacity:1}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-badge"></span>
+      HistorieBevaring · Tekst- og Tonevalg
+    </div>
+    <div class="header-actions">
+      <div class="progress-pill">
+        <div class="progress-fill"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+        <span id="progressText">0 / 0</span>
+      </div>
+      <button class="theme-toggle" data-theme-toggle aria-label="Bytt mørkt/lyst modus">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <div class="intro-banner">
+    <h1>Grill meg om tekst og tonefall 🔥</h1>
+    <p>Velg de overskriftene, ingressene og formuleringene som gir <strong>størst ro, åpenhet og troverdighet</strong>. Ingen overspesifisering, ingen AI-skryt og ingen salgsmas.</p>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--color-primary)"></div>Anbefalt valg (forhåndsmerket)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--color-warning)"></div>Usikker / «?»</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--color-success)"></div>Besvart</div>
+    </div>
+  </div>
+
+  <form id="grillForm" novalidate></form>
+
+  <div class="submit-section">
+    <h2>Klar til å sende tekstvalgene til agenten?</h2>
+    <p>Besvarte valg: <span style="font-weight:800; color:var(--color-primary);" id="answeredCount">0</span> av <span id="totalCount">0</span>.</p>
+    <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+      <button type="button" class="btn btn-primary" onclick="generateOutput()">Generer svar til agent</button>
+      <button type="button" class="btn btn-secondary" onclick="resetForm()">Nullstill</button>
+      <span class="status-msg" id="statusMsg"></span>
+    </div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="outputModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 style="font-size:17px; font-weight:800;">📋 Genererte tekstbeslutninger</h3>
+      <button class="btn-secondary" style="padding:4px 8px;" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="output-area" id="outputArea"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="copyOutput()">Kopier til utklippstavle</button>
+      <button class="btn btn-secondary" onclick="downloadMd()">Last ned DECISIONS.md</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Lukk</button>
+    </div>
+  </div>
+</div>
+
+<div class="copy-toast" id="copyToast">Kopiert til utklippstavlen! ✓</div>
+
+<script>
+// ============================================================
+// SPØRSMÅL-DATA OM TEKST OG TONEFALL
+// ============================================================
+const QUESTIONS = [
+  {
+    block: "A",
+    blockTitle: "Hero-overskrift og Ingress (Førsteinntrykket)",
+    blockDesc: "Bærende beslutning: Hvilken tone skal møte leseren øverst på siden?",
+    questions: [
+      {
+        id: "A1",
+        text: "Hvilken tittel og ingress setter den rette, åpne og rolige stemningen?",
+        type: "radio",
+        rec: 0,
+        options: [
+          {
+            title: "Det åpne spørsmålet (Undrende, universelt og inviterende)",
+            proposalText: "<strong>Hovedtittel:</strong> «Har du noe du gjerne skulle funnet ut av?»<br><p><strong>Ingress:</strong> Et bilde, et navn, en fortelling eller en gjenstand kan være starten. Vi hjelper deg å lete på en ryddig måte.</p>"
+          },
+          {
+            title: "Det metodiske utgangspunktet (Konkret, nøkternt og handlingsorientert)",
+            proposalText: "<strong>Hovedtittel:</strong> «Ett ekte spor kan være nok til å begynne.»<br><p><strong>Ingress:</strong> Vi hjelper deg å hente fram, sortere og få oversikt i eget materiale – med grundige søk og menneskelig vurdering i sentrum.</p>"
+          },
+          {
+            title: "Det bevarende utgangspunktet (Fokus på familiearv og verdighet)",
+            proposalText: "<strong>Hovedtittel:</strong> «Historien starter i det du allerede har.»<br><p><strong>Ingress:</strong> Gamle fotografier, dokumenter og muntlige minner fortjener en ryddig gjennomgang før de går i glemmeboken.</p>"
+          }
+        ],
+        freetext: true
+      }
+    ]
+  },
+  {
+    block: "B",
+    blockTitle: "Material- og Søketekster (Seksjon 2 og 3)",
+    blockDesc: "Hvordan forklarer vi at man ikke trenger full oversikt på forhånd, og hvordan letingen foregår?",
+    questions: [
+      {
+        id: "B1",
+        text: "Hvilken formulering fungerer best for seksjonen om råmaterialet?",
+        type: "radio",
+        rec: 0,
+        options: [
+          {
+            title: "Avvæpnende og lavterskel: «Du trenger ikke ha alt klart.»",
+            proposalText: "<strong>Seksjonstittel:</strong> «Du trenger ikke ha alt klart.»<br><p><strong>Brødtekst:</strong> Det er nok å starte med ett bilde, en fortelling, et dokument eller et spørsmål. Det første målet er ikke å få hele svaret, men å se hvilket spor du vil følge.</p>"
+          },
+          {
+            title: "Kildekritisk fokus: «Fra usikre spor til trygg oversikt.»",
+            proposalText: "<strong>Seksjonstittel:</strong> «Fra usikre spor til trygg oversikt.»<br><p><strong>Brødtekst:</strong> Vi går systematisk gjennom det du har liggende, og skiller hva som er sikre fakta fra hva som fremdeles er antakelser.</p>"
+          }
+        ],
+        freetext: true
+      },
+      {
+        id: "B2",
+        text: "Hvilken formulering fungerer best for seksjonen om søk og funn?",
+        type: "radio",
+        rec: 0,
+        options: [
+          {
+            title: "Klassisk og nøkternt: «Se hva materialet faktisk sier.»",
+            proposalText: "<strong>Seksjonstittel:</strong> «Se hva materialet faktisk sier.»<br><p><strong>Stikkord:</strong> spørre / finne / notere<br><strong>Brødtekst:</strong> Vi bruker arkivblikk, grundige søk og enkel struktur for å skille spor fra antakelser – og for å se hva som fremdeles må undersøkes.</p>"
+          },
+          {
+            title: "Prosessorientert: «Systematisk leting i åpne kilder.»",
+            proposalText: "<strong>Seksjonstittel:</strong> «Systematisk leting i åpne kilder.»<br><p><strong>Brødtekst:</strong> Vi hjelper deg å navigere i tilgjengelige registre, historiske dokumenter og arkiver med trygg kildekritikk.</p>"
+          }
+        ],
+        freetext: true
+      }
+    ]
+  },
+  {
+    block: "C",
+    blockTitle: "Metode, Verktøy og Menneskets Rolle (Den mørke flaten)",
+    blockDesc: "Hvordan formulerer vi balansen mellom moderne hjelpemidler og menneskelig dømmekraft uten AI-skryt?",
+    questions: [
+      {
+        id: "C1",
+        text: "Hvilken kjerneformulering skal stå på den mørke metodeflaten?",
+        type: "radio",
+        rec: 0,
+        options: [
+          {
+            title: "Nøktern og verktøynøytral (Moderne verktøy vs. mennesket)",
+            proposalText: "<strong>Hovedsetning:</strong> «Moderne verktøy hjelper oss å lete. Mennesket avgjør hva som holder.»<br><p><strong>Utdyping:</strong> Systematiske søk og digitale hjelpemidler kan gi rask oversikt og sortere store tekstmengder. Kilder, sammenheng, usikkerhet og deling krever fortsatt menneskelig vurdering.<br><em>Sitat:</em> «Vi bruker digitale redskaper for struktur. Ikke som en erstatning for ansvar eller dømmekraft.»</p>"
+          },
+          {
+            title: "Eksplisitt men dempet AI-referanse (AI som utkastredskap)",
+            proposalText: "<strong>Hovedsetning:</strong> «AI kan hjelpe oss å arbeide. Mennesket avgjør hva som holder.»<br><p><strong>Utdyping:</strong> AI kan hjelpe med å formulere spørsmål, sortere et lite grunnlag og lage førsteutkast. Kilder, sammenheng, usikkerhet og deling krever fortsatt menneskelig vurdering.<br><em>Sitat:</em> «Vi bruker AI som et arbeidsredskap. Ikke som en erstatning for ansvar eller dømmekraft.»</p>"
+          }
+        ],
+        freetext: true
+      }
+    ]
+  },
+  {
+    block: "D",
+    blockTitle: "Workshop og Avslutning (Call to Action)",
+    blockDesc: "Hvordan formuleres invitasjonen til verkstedet i Kristiansand?",
+    questions: [
+      {
+        id: "D1",
+        text: "Hva kaller vi og hvordan beskriver vi verkstedet?",
+        type: "radio",
+        rec: 0,
+        options: [
+          {
+            title: "«En rolig start på din egen leting.» (Verksted · Kristiansand · ca. 2,5 timer)",
+            proposalText: "<strong>Tittel:</strong> «En rolig start på din egen leting.»<br><p><strong>Ingress:</strong> En mulig første pilot er et lite verksted på omtrent to og en halv time.<br><strong>De tre stegene:</strong> 1. Ta med ett spor · 2. Arbeid med metoden · 3. Gå hjem med en retning.</p>"
+          },
+          {
+            title: "«Arbeidsstue for familiearkiv.» (Praktisk fellessamling)",
+            proposalText: "<strong>Tittel:</strong> «Arbeidsstue for familiearkiv.»<br><p><strong>Ingress:</strong> En 2,5-timers praktisk samling for inntil 6 deltakere der vi setter i gang letingen i medbrakt materiale.</p>"
+          }
+        ],
+        freetext: true
+      }
+    ]
+  }
+];
+
+// ============================================================
+// BYGG SKJEMA
+// ============================================================
+function buildForm() {
+  const form = document.getElementById('grillForm');
+  form.innerHTML = '';
+  let qIndex = 0;
+  QUESTIONS.forEach(block => {
+    const blockDiv = document.createElement('div');
+    blockDiv.className = 'block';
+    blockDiv.innerHTML = `
+      <div class="block-header">
+        <span class="block-label">Blokk ${block.block}</span>
+        <div>
+          <div class="block-title">${block.blockTitle}</div>
+          ${block.blockDesc ? `<div class="block-desc">${block.blockDesc}</div>` : ''}
+        </div>
+      </div>`;
+    block.questions.forEach(q => {
+      qIndex++;
+      const card = document.createElement('div');
+      card.className = 'question-card';
+      card.id = `card-${q.id}`;
+      const numEl = `<div class="q-num" id="num-${q.id}">${qIndex}</div>`;
+      const rec = q.rec !== null && q.rec !== undefined
+        ? `<div class="q-rec">✦ Anbefalt formulering: ${q.options[q.rec].title}</div>`
+        : '';
+      let optionsHtml = '<div class="options">';
+      q.options.forEach((opt, i) => {
+        const isRec = q.rec === i;
+        const inputType = q.type;
+        const inputName = `q_${q.id}`;
+        const inputId = `opt_${q.id}_${i}`;
+        const checked = isRec ? 'checked' : '';
+        optionsHtml += `
+          <label class="option-label${isRec?' recommended':''}" id="label_${q.id}_${i}" for="${inputId}">
+            <div class="option-header-row">
+              <input type="${inputType}" id="${inputId}" name="${inputName}" value="${i}" ${checked} onchange="onOptionChange('${q.id}')">
+              <span class="option-title-text">${opt.title}</span>
+              ${isRec ? '<span class="recommended-badge">↑ Anbefalt</span>' : ''}
+            </div>
+            ${opt.proposalText ? `<div class="text-proposal-box">${opt.proposalText}</div>` : ''}
+          </label>`;
+      });
+      optionsHtml += '</div>';
+      const freetextHtml = q.freetext
+        ? `<textarea class="freetext" id="free_${q.id}" placeholder="Kommentar eller egne tekstjusteringer (valgfritt)…" rows="2" oninput="onFreetext('${q.id}')"></textarea>`
+        : '';
+      const uncertainHtml = `<label class="uncertain-toggle"><input type="checkbox" id="unsure_${q.id}" onchange="onUnsure('${q.id}')"> Usikker — må drøftes videre <strong>[?]</strong></label>`;
+      card.innerHTML = `
+        <div class="q-header">${numEl}<div class="q-text">${q.text}${rec}</div></div>
+        ${optionsHtml}
+        ${freetextHtml}
+        ${uncertainHtml}`;
+      blockDiv.appendChild(card);
+    });
+    form.appendChild(blockDiv);
+  });
+  updateProgress();
+  document.querySelectorAll('.option-label input:checked').forEach(inp => {
+    inp.closest('.option-label').classList.add('selected');
+  });
+}
+
+function onOptionChange(qid) {
+  document.querySelectorAll(`[name="q_${qid}"]`).forEach(inp => {
+    inp.closest('.option-label').classList.toggle('selected', inp.checked);
+  });
+  updateCardState(qid);
+  updateProgress();
+}
+function onFreetext(qid) { updateCardState(qid); updateProgress(); }
+function onUnsure(qid) {
+  const card = document.getElementById(`card-${qid}`);
+  const unsure = document.getElementById(`unsure_${qid}`).checked;
+  card.classList.toggle('uncertain', unsure);
+  const num = document.getElementById(`num-${qid}`);
+  if(unsure){num.classList.add('unsure');num.classList.remove('done');}
+  else { updateCardState(qid); }
+  updateProgress();
+}
+function updateCardState(qid) {
+  const card = document.getElementById(`card-${qid}`);
+  const unsure = document.getElementById(`unsure_${qid}`)?.checked;
+  if(unsure) return;
+  const hasCheck = [...document.querySelectorAll(`[name="q_${qid}"]`)].some(i=>i.checked);
+  const hasFree = document.getElementById(`free_${qid}`)?.value.trim().length > 0;
+  const answered = hasCheck || hasFree;
+  card.classList.toggle('answered', answered);
+  const num = document.getElementById(`num-${qid}`);
+  num.classList.toggle('done', answered);
+  num.classList.remove('unsure');
+}
+function updateProgress() {
+  let total = 0, answered = 0;
+  QUESTIONS.forEach(b => b.questions.forEach(q => {
+    total++;
+    const unsure = document.getElementById(`unsure_${q.id}`)?.checked;
+    const hasCheck = [...document.querySelectorAll(`[name="q_${q.id}"]`)].some(i=>i.checked);
+    const hasFree = document.getElementById(`free_${q.id}`)?.value.trim().length > 0;
+    if(unsure || hasCheck || hasFree) answered++;
+  }));
+  document.getElementById('progressBar').style.width = (answered/total*100)+'%';
+  document.getElementById('progressText').textContent = `${answered} / ${total}`;
+  document.getElementById('answeredCount').textContent = answered;
+  document.getElementById('totalCount').textContent = total;
+}
+
+function generateOutput() {
+  const now = new Date().toISOString().slice(0,10);
+  let md = `---\ntitle: "Tekstbeslutninger: HistorieBevaring"\ndate: ${now}\nstatus: filled\ntags: [grilling, tekst-valg, tonefall]\n---\n\n# Svar fra grill-me-with-forms\n\n`;
+  let unanswered = [];
+  let uncertain = [];
+
+  QUESTIONS.forEach(block => {
+    md += `## Blokk ${block.block} — ${block.blockTitle}\n\n`;
+    block.questions.forEach(q => {
+      const unsure = document.getElementById(`unsure_${q.id}`)?.checked;
+      const checked = [...document.querySelectorAll(`[name="q_${q.id}"]`)].filter(i=>i.checked).map(i=>q.options[parseInt(i.value)].title);
+      const free = document.getElementById(`free_${q.id}`)?.value.trim() || '';
+      if(unsure) {
+        uncertain.push(q.id);
+        md += `### ${q.id}. ${q.text}\n- [?] USIKKER — må avklares\n`;
+        if(free) md += `- Kommentar: ${free}\n`;
+      } else if(checked.length > 0 || free) {
+        md += `### ${q.id}. ${q.text}\n`;
+        checked.forEach(c => md += `- [x] ${c}\n`);
+        if(free) md += `- Kommentar/justering: ${free}\n`;
+      } else {
+        unanswered.push(q.id);
+        md += `### ${q.id}. ${q.text}\n- [ ] UBESVART — blokkerer videre steg\n`;
+      }
+      md += '\n';
+    });
+  });
+
+  if(unanswered.length) md += `\n---\n## ⚠️ Ubesvarte spørsmål\n${unanswered.map(i=>`- ${i}`).join('\n')}\n`;
+  if(uncertain.length) md += `\n---\n## ❓ Usikre valg\n${uncertain.map(i=>`- ${i}`).join('\n')}\n`;
+  md += `\n---\n*Generert av grill-me-with-forms ${now}*\n`;
+  md += `\n\`\`\`instructions_for_agent\nLes svarene over og iverksett de valgte tekstene og overskriftene direkte i nettsiden.\n\`\`\`\n`;
+
+  document.getElementById('outputArea').textContent = md;
+  document.getElementById('outputModal').classList.add('open');
+  window._lastMd = md;
+}
+
+function closeModal() { document.getElementById('outputModal').classList.remove('open'); }
+function copyOutput() {
+  navigator.clipboard.writeText(window._lastMd||'').then(()=>{
+    const t = document.getElementById('copyToast');
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'), 2500);
+  });
+}
+function downloadMd() {
+  const blob = new Blob([window._lastMd||''], {type:'text/markdown'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'DECISIONS_TEXT.md';
+  a.click();
+}
+function resetForm() {
+  if(!confirm('Nullstill alle svar?')) return;
+  buildForm();
+}
+
+(function(){
+  const t=document.querySelector('[data-theme-toggle]'),r=document.documentElement;
+  let d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+  r.setAttribute('data-theme',d);
+  t&&t.addEventListener('click',()=>{
+    d=d==='dark'?'light':'dark';
+    r.setAttribute('data-theme',d);
+  });
+})();
+
+document.getElementById('outputModal').addEventListener('click', function(e){
+  if(e.target===this) closeModal();
+});
+
+buildForm();
+</script>
+</body>
+</html>

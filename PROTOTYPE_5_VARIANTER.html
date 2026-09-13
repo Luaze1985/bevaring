@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HistorieBevaring – 5 UI-Prototyper (Oppdagelsesbord & Rollover)</title>
+  <meta name="description" content="5 radikalt forskjellige prototyper for HistorieBevarings presentasjonsside med illustrasjoner og rollover.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #F4EFE4;
+      --paper-light: #FCFAF5;
+      --paper-dark: #E7DDCB;
+      --ink: #1F2B2B;
+      --slate: #54605E;
+      --line: #CDC3B1;
+      --ochre: #B4863D;
+      --brick: #87483D;
+      --moss: #69725C;
+      --font: "Atkinson Hyperlegible Next", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); font-family: var(--font); font-size: 17px; line-height: 1.55; }
+    
+    /* Layout Helpers */
+    .container { width: min(1200px, calc(100% - 48px)); margin-inline: auto; padding-bottom: 120px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--brick); margin-bottom: 12px; }
+    .eyebrow::before { content: ""; width: 8px; height: 8px; background: var(--ochre); display: inline-block; }
+    h1 { font-size: clamp(38px, 5.5vw, 68px); line-height: 1.02; letter-spacing: -.04em; margin: 0 0 16px; font-weight: 800; }
+    h2 { font-size: clamp(26px, 3.5vw, 42px); line-height: 1.1; letter-spacing: -.03em; margin: 0 0 16px; }
+    h3 { font-size: 20px; line-height: 1.25; margin: 0 0 8px; }
+    p { margin: 0 0 16px; }
+    .lead { font-size: clamp(18px, 1.8vw, 22px); line-height: 1.45; color: var(--slate); max-width: 54ch; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 22px; font-size: 15px; font-weight: 800; text-decoration: none; border-radius: 4px; border: 1px solid var(--brick); background: var(--brick); color: var(--paper-light); cursor: pointer; transition: all .15s ease; }
+    .btn:hover { background: var(--ink); border-color: var(--ink); }
+    .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+    .btn-ghost:hover { background: var(--ink); color: var(--paper-light); }
+
+    /* Floating Prototype Switcher */
+    #prototype-switcher {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      background: var(--ink);
+      color: var(--paper-light);
+      padding: 8px 14px;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.28);
+      font-size: 14px;
+      font-weight: 700;
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+    }
+    #prototype-switcher button {
+      background: rgba(255,255,255,0.12);
+      color: var(--paper-light);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background .15s;
+    }
+    #prototype-switcher button:hover { background: var(--ochre); color: var(--ink); }
+    .variant-pill { padding: 4px 10px; border-radius: 20px; background: rgba(255,255,255,0.08); font-size: 12px; color: #E7C985; }
+
+    /* Common Rollover Tooltip System */
+    .rollover-hotspot {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translate(-50%, -50%);
+      z-index: 20;
+    }
+    .hotspot-pin {
+      width: 14px;
+      height: 14px;
+      background: var(--brick);
+      border: 2px solid var(--paper-light);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: transform .2s cubic-bezier(0.34, 1.56, 0.64, 1), background .2s;
+    }
+    .hotspot-pulse {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid var(--brick);
+      opacity: 0.6;
+      animation: pulse 2.2s infinite ease-out;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.6); opacity: 0.8; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+    .rollover-hotspot:hover .hotspot-pin, .rollover-hotspot:focus .hotspot-pin {
+      transform: scale(1.4);
+      background: var(--ochre);
+    }
+    
+    /* Popover Card on Hover/Focus */
+    .rollover-card {
+      position: absolute;
+      bottom: calc(100% + 12px);
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      width: 290px;
+      background: var(--paper-light);
+      border: 1px solid var(--line);
+      box-shadow: 0 16px 36px rgba(31, 43, 43, 0.18);
+      padding: 16px;
+      border-radius: 2px;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: all .2s ease-out;
+      z-index: 50;
+      text-align: left;
+    }
+    .rollover-card::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px;
+      border-style: solid;
+      border-color: var(--paper-light) transparent transparent transparent;
+    }
+    .rollover-hotspot:hover .rollover-card,
+    .rollover-hotspot:focus-within .rollover-card,
+    .rollover-hotspot.active .rollover-card {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+    .rollover-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--brick);
+      margin-bottom: 4px;
+    }
+    .rollover-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 6px;
+      line-height: 1.25;
+    }
+    .rollover-desc {
+      font-size: 13px;
+      color: var(--slate);
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .rollover-meta {
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+      font-size: 11px;
+      color: var(--moss);
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Common Header */
+    header { border-bottom: 1px solid var(--line); background: rgba(252,250,245,0.95); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(8px); }
+    .nav { min-height: 64px; display: flex; align-items: center; justify-content: space-between; }
+    .wordmark { font-size: 18px; font-weight: 800; text-decoration: none; color: var(--ink); }
+    .wordmark::after { content: " ·"; color: var(--ochre); }
+
+    /* ==========================================================================
+       VARIANT 1: Det Store Feltbordet (Taktilt oppdagelsesbord)
+       ========================================================================== */
+    .v1-hero { padding: 48px 0; }
+    .v1-stage {
+      position: relative;
+      width: 100%;
+      height: 580px;
+      background: #DDD4C2;
+      border: 1px solid var(--line);
+      margin-top: 32px;
+      overflow: hidden;
+      box-shadow: inset 0 0 80px rgba(31, 43, 43, 0.08);
+    }
+    .v1-paper-item {
+      position: absolute;
+      background: var(--paper-light);
+      border: 1px solid #C8BDAB;
+      padding: 18px;
+      box-shadow: 8px 12px 24px rgba(31, 43, 43, 0.12);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .v1-paper-item:hover {
+      transform: translateY(-4px) scale(1.01) !important;
+      box-shadow: 12px 20px 32px rgba(31, 43, 43, 0.18);
+      z-index: 10;
+    }
+
+    /* ==========================================================================
+       VARIANT 2: Detektiv-indeksen (Saksmappen / Split Dossier)
+       ========================================================================== */
+    .v2-split {
+      display: grid;
+      grid-template-columns: 5fr 7fr;
+      gap: 32px;
+      margin-top: 40px;
+      align-items: start;
+    }
+    .v2-dossier {
+      background: var(--paper-light);
+      border: 1px solid var(--line);
+      padding: 28px;
+    }
+    .v2-file-tab {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      margin-bottom: 8px;
+      background: var(--paper);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .v2-file-tab:hover, .v2-file-tab.active {
+      background: var(--ink);
+      color: var(--paper-light);
+      border-color: var(--ink);
+    }
+    .v2-preview-box {
+      background: #E4DCCB;
+      border: 1px solid var(--line);
+      min-height: 520px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+    }
+
+    /* ==========================================================================
+       VARIANT 3: Arkivskuffen & Lysbordet (Horisontal Filmstripe)
+       ========================================================================== */
+    .v3-lightbox-scroll {
+      display: flex;
+      gap: 24px;
+      overflow-x: auto;
+      padding: 24px 0 32px;
+      scroll-snap-type: x mandatory;
+    }
+    .v3-slide-card {
+      flex: 0 0 340px;
+      scroll-snap-align: start;
+      background: var(--paper-light);
+      border: 1px solid var(--line);
+      padding: 20px;
+      position: relative;
+      box-shadow: 4px 6px 16px rgba(0,0,0,0.04);
+      transition: transform .2s ease;
+    }
+    .v3-slide-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 8px 16px 28px rgba(31, 43, 43, 0.12);
+    }
+    .v3-film-header {
+      background: var(--ink);
+      color: var(--paper-light);
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .1em;
+      margin: -20px -20px 16px -20px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* ==========================================================================
+       VARIANT 4: Spørsmåls-veven (The Constellation Network)
+       ========================================================================== */
+    .v4-constellation {
+      position: relative;
+      height: 540px;
+      background: var(--ink);
+      color: var(--paper-light);
+      border-radius: 4px;
+      margin-top: 32px;
+      overflow: hidden;
+    }
+    .v4-node {
+      position: absolute;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all .2s;
+      max-width: 240px;
+    }
+    .v4-node:hover {
+      background: rgba(180, 134, 61, 0.2);
+      border-color: var(--ochre);
+      transform: scale(1.05);
+    }
+
+    /* ==========================================================================
+       VARIANT 5: Fotoessay med 4 Akter og Kilde-marginaler
+       ========================================================================== */
+    .v5-acts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; margin-top: 32px; }
+    .v5-act-card {
+      background: var(--paper-light);
+      border: 1px solid var(--line);
+      padding: 24px;
+      position: relative;
+    }
+    .v5-visual-box {
+      height: 220px;
+      background: #DCD3C1;
+      border: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .v5-marginal {
+      background: #F0EAE1;
+      border-left: 3px solid var(--brick);
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--slate);
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container nav">
+      <a href="#" class="wordmark">HistorieBevaring</a>
+      <div style="font-size: 14px; font-weight: 700; color: var(--slate);">
+        Prototype-utforskning · <span id="current-variant-title">Variant 1</span>
+      </div>
+      <a href="#kontakt" class="btn" style="padding: 8px 16px; font-size: 14px;">Workshop i Kristiansand</a>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ======================================================================
+         VARIANT 1 CONTAINER: DET STORE FELTBORDET
+         ====================================================================== -->
+    <div id="variant-1" class="variant-content">
+      <section class="v1-hero">
+        <div class="eyebrow">Variant 1: Feltbordet (Visuelt oppdagelsesbord)</div>
+        <h1>Ett ekte spor kan være nok til å begynne.</h1>
+        <p class="lead">
+          Før musen over sporene på arbeidsbordet for å se hva vi oppdager når vi kombinerer arkivfaglig metode, praktisk AI og menneskelig vurdering.
+        </p>
+
+        <!-- Det interaktive arbeidsbordet -->
+        <div class="v1-stage" aria-label="Interaktivt oppdagelsesbord">
+          <!-- Bakgrunnsrutenett SVG -->
+          <svg style="position: absolute; inset:0; width:100%; height:100%; opacity:0.15;" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1F2B2B" stroke-width="1"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+          </svg>
+
+          <!-- Gjenstand 1: Amerikabrev -->
+          <div class="v1-paper-item" style="top: 12%; left: 8%; width: 280px; transform: rotate(-2deg);">
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+              <span style="font-size:10px; font-weight:800; color:var(--brick); letter-spacing:.1em;">SPOR 01</span>
+              <span style="font-size:10px; color:var(--slate);">14. mai 1912</span>
+            </div>
+            <div style="font-family:serif; font-size:14px; font-style:italic; line-height:1.4; color:#3A4443;">
+              «Kjære broder. Vi er vel fremme i Duluth etter 16 dagers overfart...»
+            </div>
+            
+            <!-- Hotspot / Rollover -->
+            <div class="rollover-hotspot" style="top: 75%; right: 10%;" tabindex="0">
+              <div class="hotspot-pulse"></div>
+              <div class="hotspot-pin"></div>
+              <div class="rollover-card">
+                <span class="rollover-tag">Arkivspor & AI-hjelp</span>
+                <div class="rollover-title">Hvem var «broder» i Duluth?</div>
+                <div class="rollover-desc">Vi transkriberer håndskriften med AI og krysssjekker passasjerlister fra Bergen havn 1912.</div>
+                <div class="rollover-meta">
+                  <span>Metode: Søk & transkripsjon</span>
+                  <span>Menneskelig kontroll: 100%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gjenstand 2: Umerket portrettfoto -->
+          <div class="v1-paper-item" style="top: 20%; left: 42%; width: 240px; transform: rotate(3deg); background:#EDE5D6;">
+            <div style="height:140px; background:#D3C8B4; display:flex; align-items:center; justify-content:center; border:1px solid #C4B69E; margin-bottom:10px;">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#54605E" stroke-width="1.5">
+                <circle cx="12" cy="8" r="4"></circle>
+                <path d="M4 20c0-4 4-6 8-6s8 2 8 6"></path>
+              </svg>
+            </div>
+            <div style="font-size:12px; font-weight:700; color:var(--ink);">Kabinettkort, fotograf i Kristiansand</div>
+
+            <div class="rollover-hotspot" style="top: 40%; left: 50%;" tabindex="0">
+              <div class="hotspot-pulse"></div>
+              <div class="hotspot-pin"></div>
+              <div class="rollover-card">
+                <span class="rollover-tag">Billedanalyse</span>
+                <div class="rollover-title">Uidentifisert slektning?</div>
+                <div class="rollover-desc">Draktdetaljer og fotografens stempel tidsbestemmes (ca. 1895–1902). Kirkebøker gir mulige kandidater.</div>
+                <div class="rollover-meta">
+                  <span>Arkiv: Statsarkivet i Kristiansand</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gjenstand 3: Skjøte / Kartutsnitt -->
+          <div class="v1-paper-item" style="top: 35%; right: 8%; width: 290px; transform: rotate(-1.5deg);">
+            <div style="font-size:10px; font-weight:800; color:var(--brick); margin-bottom:6px;">SPOR 03 · EIENDOMSREKKE</div>
+            <div style="font-size:15px; font-weight:800; margin-bottom:8px;">Bruksnummer 14, Ravnedalen</div>
+            <div style="font-size:13px; color:var(--slate);">Opprinnelig utskilt ved skylddelingsforretning 1888.</div>
+
+            <div class="rollover-hotspot" style="top: 60%; right: 20%;" tabindex="0">
+              <div class="hotspot-pulse"></div>
+              <div class="hotspot-pin"></div>
+              <div class="rollover-card">
+                <span class="rollover-tag">Pantebok & Matrikkel</span>
+                <div class="rollover-title">Følg gårdens eiere</div>
+                <div class="rollover-desc">Vi henter digitaliserte pantebøker og oversetter tinglyste formuleringer til et klart familietre.</div>
+                <div class="rollover-meta">
+                  <span>Verktøy: Kartverket + AI-sammendrag</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Midtpunkt: Lupe / Fokuspunkt -->
+          <div style="position: absolute; bottom: 15%; left: 32%; background: var(--ink); color: var(--paper-light); padding: 16px 24px; border-radius: 4px; box-shadow: 0 12px 28px rgba(0,0,0,0.3);">
+            <div style="font-size: 11px; font-weight: 800; color: #E7C985; letter-spacing: .1em;">WORKSHOP I KRISTIANSAND</div>
+            <div style="font-size: 17px; font-weight: 800; margin-top: 4px;">Lær å undersøke dine egne spor</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================================================================
+         VARIANT 2 CONTAINER: SAKSMAPPEN / SPLIT DOSSIER
+         ====================================================================== -->
+    <div id="variant-2" class="variant-content" style="display:none;">
+      <section style="padding: 48px 0;">
+        <div class="eyebrow">Variant 2: Detektiv-indeksen (Saksmappe & inspektør)</div>
+        <h1>Åpne mappen for ditt eget materiale.</h1>
+        <p class="lead">Strukturert oversikt til venstre, dyp kildeinspeksjon med rollover-analyser til høyre.</p>
+
+        <div class="v2-split">
+          <div class="v2-dossier">
+            <h3 style="margin-bottom:16px;">Aktive spor i mappen</h3>
+            
+            <div class="v2-file-tab active" onclick="activateV2Tab(this, 'Amerikabrev 1912', 'Transkribert og sporet til Duluth, MN. Inneholder referanse til ukjent onkel Lars.')">
+              <div>
+                <strong style="display:block; font-size:15px;">Dossier 01: Amerikabrev</strong>
+                <span style="font-size:12px; color:var(--slate);">1 håndskrevet brev · Emigrasjon</span>
+              </div>
+              <span style="font-size:12px; font-weight:800; color:var(--ochre);">ÅPEN →</span>
+            </div>
+
+            <div class="v2-file-tab" onclick="activateV2Tab(this, 'Kirkebokutskrift Mandal 1884', 'Utydelig dåpsinnførsel. AI har isolert dåpsvitnene og matchet mot folketelling.')">
+              <div>
+                <strong style="display:block; font-size:15px;">Dossier 02: Dåpsvitner</strong>
+                <span style="font-size:12px; color:var(--slate);">Statsarkivet · Skannet protokoll</span>
+              </div>
+              <span style="font-size:12px; font-weight:800; color:var(--slate);">VELG</span>
+            </div>
+
+            <div class="v2-file-tab" onclick="activateV2Tab(this, 'Gårdsarkiv & Skjøte', 'Panteboknotat 1898 viser overtakelse etter arveoppgjør.')">
+              <div>
+                <strong style="display:block; font-size:15px;">Dossier 03: Gården i Søgne</strong>
+                <span style="font-size:12px; color:var(--slate);">Eiendom & rettigheter</span>
+              </div>
+              <span style="font-size:12px; font-weight:800; color:var(--slate);">VELG</span>
+            </div>
+
+            <div style="margin-top:24px; padding-top:16px; border-top:1px solid var(--line);">
+              <a href="#kontakt" class="btn" style="width:100%; justify-content:center;">Bestill 90 min kartlegging</a>
+            </div>
+          </div>
+
+          <div class="v2-preview-box">
+            <div>
+              <div class="eyebrow" style="margin-bottom:8px;" id="v2-current-dossier-tag">SPOR 01 INSPEKSJON</div>
+              <h2 id="v2-current-dossier-title">Amerikabrev 1912</h2>
+              <p id="v2-current-dossier-desc" style="color:var(--slate); max-width:46ch;">
+                Transkribert og sporet til Duluth, MN. Inneholder referanse til ukjent onkel Lars.
+              </p>
+            </div>
+
+            <div style="position:relative; background:var(--paper-light); border:1px solid var(--line); height:240px; padding:20px; box-shadow:0 8px 20px rgba(0,0,0,0.06);">
+              <div style="font-size:11px; font-weight:800; color:var(--brick);">AI-ASSISTERT ANALYSE</div>
+              <div style="font-size:14px; margin-top:8px; line-height:1.5;">
+                «...sendte penger med <mark style="background:#FFE6A7; padding:2px 4px;">kaptein Salvesen</mark> på dampskipet Hekla...»
+              </div>
+
+              <div class="rollover-hotspot" style="top: 45%; left: 45%;" tabindex="0">
+                <div class="hotspot-pulse"></div>
+                <div class="hotspot-pin"></div>
+                <div class="rollover-card">
+                  <span class="rollover-tag">Navnematch funnet</span>
+                  <div class="rollover-title">D/S Hekla (Thingvalla-linjen)</div>
+                  <div class="rollover-desc">Avgikk Kristiansand 2. mai 1912. Kaptein Salvesen verifisert i skipslistene.</div>
+                  <div class="rollover-meta">
+                    <span>Kilde: Digitalarkivet</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--slate);">
+              <span>Menneskelig vurdering: Lars Erik Brekne Johnsen</span>
+              <span>Status: Verifisert primærkilde</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================================================================
+         VARIANT 3 CONTAINER: LYSBORDET / HORISONTAL STRIP
+         ====================================================================== -->
+    <div id="variant-3" class="variant-content" style="display:none;">
+      <section style="padding: 48px 0;">
+        <div class="eyebrow">Variant 3: Lysbordet (Horisontal spor-utforsking)</div>
+        <h1>Bla gjennom arkivsporene som på et lysbord.</h1>
+        <p class="lead">Horisontal inspeksjon med integrerte mikronotater og rollover på hvert enkelt funn.</p>
+
+        <div class="v3-lightbox-scroll">
+          <div class="v3-slide-card">
+            <div class="v3-film-header">
+              <span>RAMME 01</span>
+              <span>1898</span>
+            </div>
+            <div style="height:140px; background:#D8CFBF; border:1px solid var(--line); margin-bottom:14px; position:relative;">
+              <div class="rollover-hotspot" style="top:50%; left:50%;" tabindex="0">
+                <div class="hotspot-pulse"></div>
+                <div class="hotspot-pin"></div>
+                <div class="rollover-card">
+                  <span class="rollover-tag">Kontekst</span>
+                  <div class="rollover-title">Håndskrevet dagboknotat</div>
+                  <div class="rollover-desc">Beskriver sildefisket utenfor Flekkerøy under stormen i oktober.</div>
+                </div>
+              </div>
+            </div>
+            <h3>1. Dagboken fra stormen</h3>
+            <p style="font-size:14px; color:var(--slate);">Et ufullstendig notat gir dato og vindretning, men mangler navn på mannskapet.</p>
+          </div>
+
+          <div class="v3-slide-card">
+            <div class="v3-film-header">
+              <span>RAMME 02</span>
+              <span>AI-TRANSKRIPSJON</span>
+            </div>
+            <div style="height:140px; background:#D8CFBF; border:1px solid var(--line); margin-bottom:14px; position:relative;">
+              <div class="rollover-hotspot" style="top:50%; left:50%;" tabindex="0">
+                <div class="hotspot-pulse"></div>
+                <div class="hotspot-pin"></div>
+                <div class="rollover-card">
+                  <span class="rollover-tag">Maskintolking</span>
+                  <div class="rollover-title">Gotisk håndskrift → Ren tekst</div>
+                  <div class="rollover-desc">Modellen transkriberer 94% korrekt; arkivaren retter lokale dialektord.</div>
+                </div>
+              </div>
+            </div>
+            <h3>2. Tolking av gotisk skrift</h3>
+            <p style="font-size:14px; color:var(--slate);">Praktisk AI trekker ut stedsnavn og relasjoner på sekunder.</p>
+          </div>
+
+          <div class="v3-slide-card">
+            <div class="v3-film-header">
+              <span>RAMME 03</span>
+              <span>VERIFIKASJON</span>
+            </div>
+            <div style="height:140px; background:#D8CFBF; border:1px solid var(--line); margin-bottom:14px; position:relative;">
+              <div class="rollover-hotspot" style="top:50%; left:50%;" tabindex="0">
+                <div class="hotspot-pulse"></div>
+                <div class="hotspot-pin"></div>
+                <div class="rollover-card">
+                  <span class="rollover-tag">Kildekritikk</span>
+                  <div class="rollover-title">Folketelling 1900</div>
+                  <div class="rollover-desc">Bekrefter at hele mannskapet overlevde og bodde på Vesterveien.</div>
+                </div>
+              </div>
+            </div>
+            <h3>3. Kirkebok & Folketelling</h3>
+            <p style="font-size:14px; color:var(--slate);">Menneskelig vurdering forankrer funnene i offisielle kilder.</p>
+          </div>
+
+          <div class="v3-slide-card" style="background:var(--ink); color:var(--paper-light); border-color:var(--ink);">
+            <div class="v3-film-header" style="background:#2C3D3D;">
+              <span style="color:#E7C985;">KRISTIANSAND</span>
+              <span>2.5 TIMER</span>
+            </div>
+            <h3 style="color:#E7C985; font-size:22px; margin-top:20px;">Ta med dine egne spor</h3>
+            <p style="font-size:14px; color:#D2DDD8; margin:16px 0 24px;">Vi setter opp lysbordet sammen med deg i Kristiansand.</p>
+            <a href="#kontakt" class="btn" style="width:100%; justify-content:center;">Meld interesse</a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================================================================
+         VARIANT 4 CONTAINER: SPØRSMÅLS-VEVEN (CONSTELLATION)
+         ====================================================================== -->
+    <div id="variant-4" class="variant-content" style="display:none;">
+      <section style="padding: 48px 0;">
+        <div class="eyebrow">Variant 4: Spørsmåls-veven (Nettverk av spor)</div>
+        <h1>Historien henger sammen. La oss koble punktene.</h1>
+        <p class="lead">Interaktivt sporkart som synliggjør hvordan enkeltdetaljer bygger en helhetlig familiehistorie.</p>
+
+        <div class="v4-constellation" aria-label="Sporkart">
+          <svg style="position:absolute; inset:0; width:100%; height:100%;" xmlns="http://www.w3.org/2000/svg">
+            <line x1="20%" y1="30%" x2="50%" y2="50%" stroke="#B4863D" stroke-width="1.5" stroke-dasharray="4 4" />
+            <line x1="50%" y1="50%" x2="80%" y2="35%" stroke="#B4863D" stroke-width="1.5" stroke-dasharray="4 4" />
+            <line x1="50%" y1="50%" x2="50%" y2="80%" stroke="#87483D" stroke-width="2" />
+          </svg>
+
+          <div class="v4-node" style="top:18%; left:8%;">
+            <div style="font-size:10px; font-weight:800; color:#E7C985;">SPOR A · BILDE</div>
+            <div style="font-size:14px; font-weight:700;">Ukjent kvinne foran trehus</div>
+            <div class="rollover-hotspot" style="top:50%; right:-14px;" tabindex="0">
+              <div class="hotspot-pin" style="background:#E7C985;"></div>
+              <div class="rollover-card">
+                <span class="rollover-tag">Fotohistorie</span>
+                <div class="rollover-title">Bygningsstil i Posebyen</div>
+                <div class="rollover-desc">Panelsnekring og vindusprofiler indikerer Kristiansand ca. 1890.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="v4-node" style="top:38%; left:38%; max-width:280px; background:rgba(180, 134, 61, 0.25); border-color:var(--ochre);">
+            <div style="font-size:10px; font-weight:800; color:#E7C985;">METODENAVET</div>
+            <div style="font-size:16px; font-weight:800; margin:4px 0;">Praktisk AI + Menneskelig dom</div>
+            <div style="font-size:12px; color:#DCE5E0;">AI foreslår koblinger; Lars og familien bekrefter sannheten.</div>
+          </div>
+
+          <div class="v4-node" style="top:22%; right:8%;">
+            <div style="font-size:10px; font-weight:800; color:#E7C985;">SPOR B · EMIGRASJON</div>
+            <div style="font-size:14px; font-weight:700;">Reisedato 1904 registrert</div>
+            <div class="rollover-hotspot" style="top:50%; left:-14px;" tabindex="0">
+              <div class="hotspot-pin" style="background:#E7C985;"></div>
+              <div class="rollover-card">
+                <span class="rollover-tag">Skipslister</span>
+                <div class="rollover-title">S/S Norge forliset?</div>
+                <div class="rollover-desc">Krysssjekket mot passasjerliste; reiste med annen rute og ankom trygt.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="v4-node" style="bottom:10%; left:38%; max-width:280px; border-color:var(--brick); background:rgba(135,72,61,0.3);">
+            <div style="font-size:10px; font-weight:800; color:#FF9F8E;">SLUTTRESULTAT</div>
+            <div style="font-size:15px; font-weight:800;">Ferdig familiehistorie & bok</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================================================================
+         VARIANT 5 CONTAINER: FOTOESSAY I 4 AKTER
+         ====================================================================== -->
+    <div id="variant-5" class="variant-content" style="display:none;">
+      <section style="padding: 48px 0;">
+        <div class="eyebrow">Variant 5: Fotoessay (4 redaksjonelle akter)</div>
+        <h1>Fire flater. Fra ubesvart spørsmål til bevart historie.</h1>
+        <p class="lead">Rolig redaksjonell rytme med presise kildemarginaler ved rollover.</p>
+
+        <div class="v5-acts">
+          <div class="v5-act-card">
+            <span class="eyebrow">AKT 01 · SPØRSMÅLET</span>
+            <h3>Hva gjemmer seg i skoesken?</h3>
+            <p style="font-size:14px; color:var(--slate);">
+              De fleste familier har en bunke bilder og brev uten navn. Vi starter alltid med det ubesvarte spørsmålet.
+            </p>
+            <div class="v5-visual-box">
+              <div class="rollover-hotspot" style="top:50%; left:50%;" tabindex="0">
+                <div class="hotspot-pulse"></div>
+                <div class="hotspot-pin"></div>
+                <div class="rollover-card">
+                  <span class="rollover-tag">Første blikk</span>
+                  <div class="rollover-title">Sortering av råmateriale</div>
+                  <div class="rollover-desc">Vi grupperer etter tidsepoker, skrifttyper og fototeknikker.</div>
+                </div>
+              </div>
+            </div>
+            <div class="v5-marginal">
+              <strong>Arkivfaglig råd:</strong> Ikke kast konvolutter eller baksider med notater – de inneholder ofte nøkkelen.
+            </div>
+          </div>
+
+          <div class="v5-act-card">
+            <span class="eyebrow">AKT 02 · LETINGEN</span>
+            <h3>Søk i åpne og lukkede kilder</h3>
+            <p style="font-size:14px; color:var(--slate);">
+              Digitalarkivet, Nasjonalbiblioteket og lokale kilder gjennomsøkes systematisk med praktisk AI-støtte.
+            </p>
+            <div class="v5-visual-box">
+              <div class="rollover-hotspot" style="top:50%; left:50%;" tabindex="0">
+                <div class="hotspot-pulse"></div>
+                <div class="hotspot-pin"></div>
+                <div class="rollover-card">
+                  <span class="rollover-tag">Metode</span>
+                  <div class="rollover-title">Semantisk kildesøk</div>
+                  <div class="rollover-desc">Finner omtale i lokalaviser selv om stavemåten på etternavnet varierer.</div>
+                </div>
+              </div>
+            </div>
+            <div class="v5-marginal">
+              <strong>AI-hjelp:</strong> Hurtigsøk i millioner av avissider etter spesifikke hendelser i Agder.
+            </div>
+          </div>
+
+          <div class="v5-act-card">
+            <span class="eyebrow">AKT 03 · VURDERINGEN</span>
+            <h3>Menneskelig kildekritikk</h3>
+            <p style="font-size:14px; color:var(--slate);">
+              AI er aldri en sannhetsmaskin. Familien og metodeverten kontrollerer hvert funn mot fakta.
+            </p>
+            <div class="v5-visual-box">
+              <div class="rollover-hotspot" style="top:50%; left:50%;" tabindex="0">
+                <div class="hotspot-pulse"></div>
+                <div class="hotspot-pin"></div>
+                <div class="rollover-card">
+                  <span class="rollover-tag">Kvalitetskontroll</span>
+                  <div class="rollover-title">Faktasjekk-protokoll</div>
+                  <div class="rollover-desc">Hvert årstall og slektsledd må ha minst to uavhengige kilder.</div>
+                </div>
+              </div>
+            </div>
+            <div class="v5-marginal">
+              <strong>Ansvar:</strong> Familien eier sitt materiale og bestemmer hva som skal bevares for ettertiden.
+            </div>
+          </div>
+
+          <div class="v5-act-card" style="background:var(--paper-dark);">
+            <span class="eyebrow">AKT 04 · WORKSHOP</span>
+            <h3>Start reisen i Kristiansand</h3>
+            <p style="font-size:14px; color:var(--slate);">
+              En intensiv 2.5 timers samling hvor du lærer metoden og gjør de første funnene i ditt eget arkiv.
+            </p>
+            <div style="padding:20px; background:var(--paper-light); border:1px solid var(--line); margin-top:20px;">
+              <h4 style="margin:0 0 8px; font-size:16px;">Begrenset til 6 deltakere</h4>
+              <p style="font-size:13px; color:var(--slate); margin-bottom:14px;">Praktisk veiledning med Lars som metodevert.</p>
+              <a href="#kontakt" class="btn" style="width:100%; justify-content:center;">Reserver plass</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <!-- FLOATING PROTOTYPE SWITCHER -->
+  <div id="prototype-switcher" role="region" aria-label="Prototypevariantvelger">
+    <button id="prev-variant-btn" aria-label="Forrige variant">←</button>
+    <span class="variant-pill" id="variant-indicator">Variant 1 / 5</span>
+    <span id="variant-label-text">Det store feltbordet</span>
+    <button id="next-variant-btn" aria-label="Neste variant">→</button>
+  </div>
+
+  <script>
+    const variants = [
+      { id: '1', name: 'Det store feltbordet (Taktilt oppdagelsesbord)' },
+      { id: '2', name: 'Detektiv-indeksen (Saksmappe & split dossier)' },
+      { id: '3', name: 'Lysbordet (Horisontal filmstripe)' },
+      { id: '4', name: 'Spørsmåls-veven (Nettverk av spor)' },
+      { id: '5', name: 'Fotoessay (4 redaksjonelle akter)' }
+    ];
+
+    let currentIdx = 0;
+
+    function getVariantFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const v = params.get('variant');
+      if (v) {
+        const found = variants.findIndex(item => item.id === v);
+        if (found !== -1) return found;
+      }
+      return 0;
+    }
+
+    function setVariant(idx) {
+      currentIdx = (idx + variants.length) % variants.length;
+      const v = variants[currentIdx];
+
+      const url = new URL(window.location);
+      url.searchParams.set('variant', v.id);
+      window.history.replaceState({}, '', url);
+
+      document.querySelectorAll('.variant-content').forEach(el => el.style.display = 'none');
+
+      const activeEl = document.getElementById('variant-' + v.id);
+      if (activeEl) activeEl.style.display = 'block';
+
+      document.getElementById('variant-indicator').textContent = `Variant ${v.id} / ${variants.length}`;
+      document.getElementById('variant-label-text').textContent = v.name;
+      document.getElementById('current-variant-title').textContent = `Variant ${v.id}: ${v.name}`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.getElementById('prev-variant-btn').addEventListener('click', () => setVariant(currentIdx - 1));
+    document.getElementById('next-variant-btn').addEventListener('click', () => setVariant(currentIdx + 1));
+
+    window.addEventListener('keydown', (e) => {
+      if (['input', 'textarea'].includes(document.activeElement.tagName.toLowerCase())) return;
+      if (e.key === 'ArrowLeft') setVariant(currentIdx - 1);
+      if (e.key === 'ArrowRight') setVariant(currentIdx + 1);
+    });
+
+    window.activateV2Tab = function(element, title, desc) {
+      document.querySelectorAll('.v2-file-tab').forEach(el => el.classList.remove('active'));
+      element.classList.add('active');
+      document.getElementById('v2-current-dossier-title').textContent = title;
+      document.getElementById('v2-current-dossier-desc').textContent = desc;
+    };
+
+    currentIdx = getVariantFromUrl();
+    setVariant(currentIdx);
+  </script>
+</body>
+</html>

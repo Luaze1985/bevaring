@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="HistorieBevaring – praktisk AI med menneskelig kvalitet.">
+  <title>HistorieBevaring – praktisk AI med menneskelig kvalitet</title>
+  <style>
+    :root {
+      --paper:#f6f0e5; --surface:#fffcf6; --ink:#28231f; --muted:#685f55;
+      --line:#ddd3c4; --action:#176b66; --action-strong:#0f4f4c;
+      --action-soft:#dceae5; --question:#a8563c; --on-dark:#fffdf7;
+      --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px;
+      --s7:48px; --s8:64px; --s9:96px; --s10:128px;
+      --r-sm:8px; --r-md:16px; --r-lg:24px;
+      --shadow:0 18px 45px rgb(40 35 31 / 9%);
+      --font:"Atkinson Hyperlegible Next", Arial, sans-serif;
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--paper); font-family:var(--font); font-size:16px; line-height:1.6; }
+    a { color:inherit; }
+    button, a { -webkit-tap-highlight-color:transparent; }
+    :focus-visible { outline:3px solid var(--question); outline-offset:4px; }
+    .skip { position:absolute; z-index:30; top:-80px; left:var(--s4); padding:var(--s3) var(--s4); color:#fff; background:var(--action-strong); border-radius:var(--r-sm); }
+    .skip:focus { top:var(--s4); }
+    .wrap { width:min(1120px, calc(100% - 64px)); margin-inline:auto; }
+    .eyebrow { margin:0 0 var(--s3); color:var(--action-strong); font-size:12px; font-weight:700; line-height:1.2; letter-spacing:.09em; text-transform:uppercase; }
+    .on-dark .eyebrow { color:#b9dfd4; }
+    h1,h2,h3,p { margin-top:0; }
+    h1 { max-width:13ch; margin-bottom:var(--s5); font-size:clamp(48px,6vw,80px); font-weight:800; line-height:.98; letter-spacing:-.055em; }
+    h2 { max-width:18ch; margin-bottom:var(--s4); font-size:clamp(32px,4vw,40px); font-weight:700; line-height:1.08; letter-spacing:-.04em; }
+    h3 { margin-bottom:var(--s2); font-size:22px; line-height:1.2; }
+    .lede { max-width:52ch; color:var(--muted); font-size:clamp(18px,2vw,20px); line-height:1.55; }
+    .muted { color:var(--muted); }
+    .section { padding:var(--s9) 0; }
+    .section-head { display:grid; grid-template-columns:1fr minmax(250px, .65fr); gap:var(--s7); align-items:end; margin-bottom:var(--s7); }
+    .section-head p { max-width:43ch; margin:0; color:var(--muted); }
+
+    /* Navigation */
+    header { position:sticky; z-index:20; top:0; background:rgb(246 240 229 / 94%); border-bottom:1px solid rgb(104 95 85 / 18%); backdrop-filter:blur(12px); }
+    .nav { min-height:72px; display:flex; align-items:center; justify-content:space-between; gap:var(--s4); }
+    .wordmark { font-size:18px; font-weight:800; letter-spacing:-.03em; text-decoration:none; }
+    .wordmark span { color:var(--action); }
+    .nav-right { display:flex; align-items:center; gap:var(--s5); }
+    .nav-link { color:var(--ink); font-size:15px; text-decoration:none; }
+    .nav-link:hover { text-decoration:underline; text-underline-offset:5px; }
+
+    /* Buttons */
+    .button { display:inline-flex; min-height:48px; align-items:center; justify-content:center; gap:var(--s2); padding:12px 20px; border:1px solid var(--action); border-radius:999px; color:#fff; background:var(--action); font-size:16px; font-weight:700; text-decoration:none; transition:background 180ms cubic-bezier(.16,1,.3,1), transform 180ms cubic-bezier(.16,1,.3,1); }
+    .button:hover { background:var(--action-strong); transform:translateY(-1px); }
+    .button:active { background:var(--action-strong); transform:none; }
+    .button.secondary { color:var(--action-strong); background:transparent; }
+    .button.secondary:hover { color:#fff; }
+    .button.light { color:var(--ink); border-color:var(--on-dark); background:var(--on-dark); }
+    .button.light:hover { background:var(--paper); }
+
+    /* Hero */
+    .hero { padding:var(--s10) 0 var(--s9); }
+    .hero-grid { display:grid; grid-template-columns:repeat(12, 1fr); gap:var(--s7); align-items:center; }
+    .hero-copy { grid-column:span 6; }
+    .hero-actions { display:flex; flex-wrap:wrap; gap:var(--s3); margin-top:var(--s6); }
+    .hero-art { grid-column:span 6; position:relative; min-height:500px; overflow:hidden; background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); box-shadow:var(--shadow); }
+    .hero-art::before { position:absolute; inset:0; background-image:linear-gradient(rgb(104 95 85 / 7%) 1px,transparent 1px),linear-gradient(90deg,rgb(104 95 85 / 7%) 1px,transparent 1px); background-size:28px 28px; content:""; }
+    .hero-paper { position:absolute; z-index:1; top:74px; left:50%; width:min(74%,390px); min-height:310px; padding:32px; background:#fffdf8; border:1px solid #e7dece; border-radius:4px; box-shadow:0 16px 28px rgb(40 35 31 / 12%); transform:translateX(-50%) rotate(-2deg); }
+    .paper-eyebrow { margin-bottom:var(--s5); color:var(--question); font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; }
+    .line { height:10px; margin:12px 0; background:#e8e0d4; border-radius:999px; }
+    .line.short { width:52%; } .line.mid { width:74%; }
+    .source-note { display:flex; gap:var(--s2); align-items:flex-start; margin-top:var(--s5); padding:var(--s3); color:var(--action-strong); background:var(--action-soft); border-radius:var(--r-sm); font-size:14px; line-height:1.4; }
+    .tag { position:absolute; z-index:2; display:flex; align-items:center; gap:6px; padding:9px 12px; color:#fff; background:var(--action-strong); border-radius:8px; box-shadow:0 8px 20px rgb(40 35 31 / 15%); font-size:12px; font-weight:700; }
+    .tag.one { top:32px; right:28px; } .tag.two { bottom:34px; left:28px; background:var(--question); }
+
+    /* Competence */
+    .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--s4); }
+    .card { padding:var(--s5); background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md); }
+    .card p { margin:0; color:var(--muted); }
+    .icon-circle { width:44px; height:44px; display:grid; place-items:center; margin-bottom:var(--s5); color:var(--action-strong); background:var(--action-soft); border-radius:50%; }
+
+    /* Method */
+    .method { color:var(--on-dark); background:var(--action-strong); }
+    .method .section-head p { color:#d5e2dd; }
+    .steps { display:grid; grid-template-columns:repeat(5,1fr); gap:var(--s4); }
+    .step { position:relative; min-height:142px; padding-right:var(--s3); }
+    .step:not(:last-child)::after { position:absolute; top:16px; right:0; width:16px; border-top:1px solid #8eb6ac; content:""; }
+    .step-no { width:32px; height:32px; display:grid; place-items:center; margin-bottom:var(--s4); color:var(--action-strong); background:#c9e1d9; border-radius:50%; font-size:13px; font-weight:800; }
+    .step h3 { margin-bottom:var(--s2); color:#fffdf7; font-size:20px; }
+    .step p { margin:0; color:#d5e2dd; font-size:15px; }
+
+    /* Film */
+    .film-grid { display:grid; grid-template-columns:repeat(12,1fr); gap:var(--s7); align-items:center; }
+    .film-copy { grid-column:span 4; }
+    .film-copy p { color:var(--muted); }
+    .film-frame { grid-column:span 8; overflow:hidden; aspect-ratio:16/9; position:relative; display:grid; place-items:center; color:#fffdf7; background:linear-gradient(135deg,#365f59,#0f4f4c 58%,#0b3e3b); border:1px solid #0d4542; border-radius:var(--r-md); }
+    .film-frame::before { position:absolute; inset:0; opacity:.42; background:radial-gradient(circle at 20% 20%,#dceae5 0 2%,transparent 2.4%),linear-gradient(120deg,transparent 35%,rgb(255 253 247 / 16%) 35% 38%,transparent 38%); background-size:64px 64px,100% 100%; content:""; }
+    .film-content { position:relative; z-index:1; text-align:center; }
+    .play { width:64px; height:64px; display:grid; place-items:center; margin:0 auto var(--s4); color:var(--action-strong); background:#fffdf7; border:0; border-radius:50%; font:inherit; }
+    .play svg { margin-left:3px; }
+    .film-label { margin:0; font-size:18px; font-weight:700; }
+    .film-status { max-width:34ch; margin:var(--s2) auto 0; color:#d5e2dd; font-size:14px; }
+    .transcript-note { margin-top:var(--s4); padding:var(--s3); color:var(--muted); background:var(--surface); border:1px solid var(--line); border-radius:var(--r-sm); font-size:14px; }
+
+    /* Photo essay */
+    .essay { display:grid; gap:var(--s9); }
+    .essay-item { display:grid; grid-template-columns:repeat(12,1fr); gap:var(--s7); align-items:center; }
+    .essay-item.reverse .essay-media { order:2; } .essay-item.reverse .essay-copy { order:1; }
+    .essay-media { grid-column:span 7; min-height:420px; position:relative; overflow:hidden; border:1px solid var(--line); border-radius:var(--r-lg); background:#ded3c1; }
+    .essay-copy { grid-column:span 5; max-width:48ch; }
+    .essay-copy p { color:var(--muted); }
+    .essay-index { margin-bottom:var(--s3); color:var(--question); font-size:12px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; }
+    .caption { margin:var(--s4) 0 0; color:var(--muted); font-size:14px; }
+    .media-label { position:absolute; z-index:2; right:var(--s4); bottom:var(--s4); margin:0; padding:7px 10px; color:var(--ink); background:rgb(255 253 247 / 92%); border-radius:var(--r-sm); font-size:12px; font-weight:700; }
+    .media-art { position:absolute; inset:0; }
+    .work .media-art { background:linear-gradient(145deg,#453b31 0 24%,#d4c5ae 24% 57%,#827564 57% 100%); }
+    .work .media-art::before { position:absolute; width:48%; height:62%; left:18%; top:19%; background:#f7f1e8; box-shadow:18px 18px 0 rgb(40 35 31 / 18%); transform:rotate(-5deg); content:""; }
+    .material .media-art { background:linear-gradient(140deg,#c8bb9f 0 28%,#f7f1e8 28% 68%,#8d7560 68%); }
+    .material .media-art::before { position:absolute; left:20%; bottom:16%; width:58%; height:33%; border:1px solid #aa9677; background:repeating-linear-gradient(0deg,#e6dac8 0 9px,#fffaf1 9px 18px); box-shadow:0 14px 24px rgb(40 35 31 / 14%); transform:rotate(3deg); content:""; }
+    .question .media-art { background:radial-gradient(circle at 60% 30%,#e2b99a 0 6%,transparent 6.4%),linear-gradient(145deg,#4f786e,#dceae5 49%,#e7d8c2 49%); }
+    .question .media-art::before { position:absolute; top:22%; left:17%; width:62%; height:54%; background:#fffdf8; border:1px solid #d9cbbb; box-shadow:0 14px 26px rgb(40 35 31 / 13%); transform:rotate(-2deg); content:""; }
+    .question .media-art::after { position:absolute; z-index:1; top:34%; left:30%; color:var(--question); content:"?"; font-size:96px; font-weight:800; line-height:1; }
+    .judgement .media-art { background:linear-gradient(125deg,#dceae5,#718e85 48%,#2e4e48 48%); }
+    .judgement .media-art::before { position:absolute; right:18%; top:17%; width:49%; height:65%; background:linear-gradient(#fffdf8 0 0) padding-box,repeating-linear-gradient(0deg,#e9e1d4 0 10px,#fffdf8 10px 20px); border:1px solid #d9cbbb; box-shadow:-14px 16px 0 rgb(40 35 31 / 13%); transform:rotate(4deg); content:""; }
+
+    /* Contact */
+    .contact { padding-top:0; }
+    .contact-box { padding:var(--s8); color:var(--on-dark); background:var(--question); border-radius:var(--r-lg); }
+    .contact-box h2 { max-width:14ch; margin-bottom:var(--s4); }
+    .contact-box p { max-width:52ch; margin-bottom:var(--s5); color:#ffece3; }
+    .contact-box .eyebrow { color:#ffece3; }
+    .contact-box small { display:block; margin-top:var(--s4); color:#ffece3; }
+
+    footer { padding:var(--s5) 0; color:var(--muted); font-size:14px; }
+    footer .wrap { display:flex; justify-content:space-between; gap:var(--s4); padding-top:var(--s5); border-top:1px solid var(--line); }
+
+    @media (max-width:1023px) {
+      .wrap { width:min(1120px, calc(100% - 48px)); }
+      .hero-grid,.film-grid,.essay-item { gap:var(--s6); }
+      .hero-copy,.hero-art { grid-column:span 6; }
+      .film-copy { grid-column:span 5; } .film-frame { grid-column:span 7; }
+      .essay-media { grid-column:span 7; } .essay-copy { grid-column:span 5; }
+    }
+    @media (max-width:639px) {
+      html { scroll-padding-top:72px; }
+      .wrap { width:calc(100% - 32px); }
+      .nav { min-height:64px; } .nav-link { display:none; }
+      .section { padding:var(--s7) 0; } .hero { padding:var(--s8) 0 var(--s7); }
+      .section-head { display:block; margin-bottom:var(--s6); } .section-head p { margin-top:var(--s4); }
+      .hero-grid,.film-grid,.essay-item { display:block; }
+      .hero-art { min-height:370px; margin-top:var(--s7); }
+      .hero-paper { top:62px; padding:var(--s5); } .tag.one { top:20px; right:16px; } .tag.two { bottom:20px; left:16px; }
+      .cards { grid-template-columns:1fr; }
+      .steps { grid-template-columns:1fr; gap:var(--s5); }
+      .step { display:grid; grid-template-columns:32px 1fr; column-gap:var(--s3); min-height:0; padding:0; }
+      .step-no { grid-row:span 2; margin:0; } .step h3 { margin:4px 0 0; } .step p { grid-column:2; }
+      .step:not(:last-child)::after { top:36px; left:16px; right:auto; width:0; height:24px; border-top:0; border-left:1px solid #8eb6ac; }
+      .film-frame { margin-top:var(--s5); } .film-copy { margin-bottom:var(--s5); }
+      .essay { gap:var(--s7); } .essay-item.reverse .essay-media,.essay-item.reverse .essay-copy { order:initial; }
+      .essay-media { min-height:280px; margin-bottom:var(--s5); }
+      .contact-box { padding:var(--s6); } footer .wrap { display:block; } footer .wrap span+span { display:block; margin-top:var(--s2); }
+    }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { transition-duration:.01ms !important; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#innhold">Hopp til innhold</a>
+  <header>
+    <div class="wrap nav">
+      <a class="wordmark" href="#topp" aria-label="HistorieBevaring, til toppen">Historie<span>Bevaring</span></a>
+      <nav class="nav-right" aria-label="Hovednavigasjon">
+        <a class="nav-link" href="#arbeidsmate">Slik tenker vi</a>
+        <a class="button" href="#kontakt">Ta kontakt</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="innhold">
+    <section class="hero" id="topp">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Praktisk AI og kvalitetsarbeid</p>
+          <h1>Praktisk AI – med menneskelig kvalitet.</h1>
+          <p class="lede">Vi hjelper deg å bruke AI på en ryddig måte når du skal finne fram, forstå, strukturere og fortelle med utgangspunkt i ditt eget materiale.</p>
+          <div class="hero-actions">
+            <a class="button" href="#kontakt">Ta kontakt</a>
+            <a class="button secondary" href="#arbeidsmate">Se hvordan vi tenker</a>
+          </div>
+        </div>
+        <div class="hero-art" aria-label="Fiktiv arbeidsflate med notat, spørsmål og kildelapp">
+          <div class="tag one">✦ still et bedre spørsmål</div>
+          <div class="tag two">? hva mangler vi?</div>
+          <div class="hero-paper">
+            <p class="paper-eyebrow">Arbeidsnotat · fiktivt eksempel</p>
+            <div class="line mid"></div><div class="line"></div><div class="line short"></div>
+            <div class="source-note"><span aria-hidden="true">⌕</span><span>Skille mellom det vi vet, det vi tror og det vi må undersøke.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="kompetanse">
+      <div class="wrap">
+        <div class="section-head">
+          <div><p class="eyebrow">Hva vi kan hjelpe med</p><h2 id="kompetanse">Fra uoversiktlig materiale til et godt neste steg.</h2></div>
+          <p>Vi tar utgangspunkt i oppgaven du faktisk står i. Målet er ikke mer teknologi, men bedre oversikt og bedre valg underveis.</p>
+        </div>
+        <div class="cards">
+          <article class="card"><div class="icon-circle" aria-hidden="true">↗</div><h3>Komme i gang</h3><p>Gjør AI nyttig i en konkret oppgave, med bedre spørsmål og en enkel arbeidsflyt.</p></article>
+          <article class="card"><div class="icon-circle" aria-hidden="true">□</div><h3>Få oversikt</h3><p>Sorter bilder, dokumenter, notater og fortellinger slik at det blir mulig å arbeide videre.</p></article>
+          <article class="card"><div class="icon-circle" aria-hidden="true">✦</div><h3>Arbeide med kvalitet</h3><p>Skille mellom kilder, tolkninger og det som fortsatt må undersøkes.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section method on-dark" id="arbeidsmate" aria-labelledby="metode">
+      <div class="wrap">
+        <div class="section-head"><div><p class="eyebrow">Slik tenker vi</p><h2 id="metode">AI kan foreslå og strukturere. Mennesket beholder vurderingen.</h2></div><p>Det er arbeidsmåten som skaper kvalitet: spørsmålene, kildene, valgene og den menneskelige kontrollen.</p></div>
+        <div class="steps" aria-label="Fem trinn i arbeidsmåten">
+          <article class="step"><div class="step-no">1</div><div><h3>Spørre</h3><p>Avgrens hva du faktisk vil finne ut.</p></div></article>
+          <article class="step"><div class="step-no">2</div><div><h3>Finne fram</h3><p>Samle det som er relevant – uten å anta for mye.</p></div></article>
+          <article class="step"><div class="step-no">3</div><div><h3>Vurdere</h3><p>Se forskjell på kilde, tolkning og usikkerhet.</p></div></article>
+          <article class="step"><div class="step-no">4</div><div><h3>Sette i system</h3><p>Bruk AI til struktur, utkast og oversikt.</p></div></article>
+          <article class="step"><div class="step-no">5</div><div><h3>Velge</h3><p>Mennesket avgjør hva som er riktig å gjøre videre.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="film">
+      <div class="wrap film-grid">
+        <div class="film-copy"><p class="eyebrow">Møt oss</p><h2 id="film">En kort film om hvorfor arbeidsmåten betyr noe.</h2><p>Filmen skal være en menneskelig introduksjon til hvordan vi arbeider med praktisk AI, spørsmål og kvalitet. Den er under planlegging og kommer med undertekster og transkripsjon.</p><div class="transcript-note">Videoplass: ingen filmfil eller personmateriale er lagt inn i denne lokale skissen.</div></div>
+        <div class="film-frame" role="group" aria-label="Plassholder for presentasjonsfilm">
+          <div class="film-content"><button class="play" type="button" disabled aria-label="Presentasjonsfilm klargjøres"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="m8 5 11 7-11 7z"/></svg></button><p class="film-label">Se filmen: Slik jobber vi</p><p class="film-status">Legg inn godkjent film, posterbilde, norske undertekster og transkripsjon før publisering.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="essay-title">
+      <div class="wrap">
+        <div class="section-head"><div><p class="eyebrow">Arbeidsmåten i praksis</p><h2 id="essay-title">Fire steg. Samme respekt for materialet hele veien.</h2></div><p>Fotoessayet får plass til ekte arbeidsbilder senere. Nå viser skissen kun merkede, fiktive medieflater.</p></div>
+        <div class="essay">
+          <article class="essay-item"><div class="essay-media work" aria-label="Fiktiv plassholder for bilde av arbeid"><div class="media-art" aria-hidden="true"></div><p class="media-label">Bilde 1 · arbeid</p></div><div class="essay-copy"><p class="essay-index">01 · arbeid</p><h3>Start med et spørsmål som er verdt å undersøke.</h3><p>Arbeidet begynner ikke med et verktøy. Det begynner med å forstå hva du prøver å finne fram til, fortelle eller få oversikt over.</p><p class="caption">Planlagt motiv: Lars ved arbeid med fiktive eller egne, rettighetsavklarte artefakter.</p></div></article>
+          <article class="essay-item reverse"><div class="essay-media material" aria-label="Fiktiv plassholder for bilde av materiale"><div class="media-art" aria-hidden="true"></div><p class="media-label">Bilde 2 · materiale</p></div><div class="essay-copy"><p class="essay-index">02 · materiale</p><h3>Se hva som faktisk finnes før du trekker konklusjoner.</h3><p>Bilder, notater og dokumenter kan være utgangspunkt for et bedre neste steg. De må få beholde sammenhengen sin.</p><p class="caption">Planlagt motiv: papirdetaljer, mapper eller andre egne, rettighetsavklarte materialer.</p></div></article>
+          <article class="essay-item"><div class="essay-media question" aria-label="Fiktiv plassholder for bilde av spørsmål"><div class="media-art" aria-hidden="true"></div><p class="media-label">Bilde 3 · spørsmål</p></div><div class="essay-copy"><p class="essay-index">03 · spørsmål</p><h3>La usikkerheten være synlig.</h3><p>AI kan hjelpe med struktur og utkast. Den erstatter ikke spørsmålet om hva som er kildebelagt, uklart eller verdt å finne ut mer om.</p><p class="caption">Planlagt motiv: arbeidsnotat eller liten redaksjonell detalj med rettighetskontroll.</p></div></article>
+          <article class="essay-item reverse"><div class="essay-media judgement" aria-label="Fiktiv plassholder for bilde av menneskelig vurdering"><div class="media-art" aria-hidden="true"></div><p class="media-label">Bilde 4 · vurdering</p></div><div class="essay-copy"><p class="essay-index">04 · menneskelig vurdering</p><h3>Teknologien foreslår. Mennesket velger.</h3><p>Det er mennesket som avgjør hva som er relevant, hva som må sjekkes og hva som er riktig å gjøre videre.</p><p class="caption">Planlagt motiv: sortering, redigering eller et bevisst arbeidsvalg.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section contact" id="kontakt" aria-labelledby="kontakt-title">
+      <div class="wrap contact-box"><p class="eyebrow">Kontakt</p><h2 id="kontakt-title">Har du en oppgave du vil få bedre oversikt over?</h2><p>Ta kontakt for en samtale. Workshop kan være en aktuell form når det passer oppgaven og menneskene som skal delta.</p><a class="button light" href="#topp">Til toppen</a><small>Kontaktkanal legges inn når den er avklart. Denne lokale skissen samler ikke inn data.</small></div>
+    </section>
+  </main>
+
+  <footer><div class="wrap"><span>HistorieBevaring · presentasjonsskisse</span><span>Praktisk AI med menneskelig kvalitet</span></div></footer>
+</body>
+</html>

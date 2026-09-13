@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="no" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Designvalg for HistorieBevaring – Grill Me With Forms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --color-bg:#F4EFE4;--color-surface:#FCFAF5;--color-surface-2:#FFFFFF;
+  --color-surface-offset:#EDE5D6;--color-border:#CDC3B1;--color-divider:#D8CFBF;
+  --color-text:#1F2B2B;--color-text-muted:#54605E;--color-text-faint:#8A9694;
+  --color-primary:#87483D;--color-primary-hover:#6A352C;--color-primary-highlight:#F7ECE9;
+  --color-success:#4A6B53;--color-warning:#B4863D;--color-error:#A12C2C;
+  --color-uncertain:#B4863D;--color-uncertain-bg:#FCF8EE;
+  --space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;
+  --space-5:1.25rem;--space-6:1.5rem;--space-8:2rem;--space-10:2.5rem;
+  --space-12:3rem;--space-16:4rem;
+  --radius-sm:3px;--radius-md:4px;--radius-lg:6px;--radius-xl:8px;--radius-full:9999px;
+  --shadow-sm:0 1px 3px rgba(31,43,43,0.06);--shadow-md:0 6px 16px rgba(31,43,43,0.08);--shadow-lg:0 12px 28px rgba(31,43,43,0.12);
+  --transition:160ms cubic-bezier(.16,1,.3,1);
+  --font-body:"Atkinson Hyperlegible Next",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+[data-theme="dark"]{
+  --color-bg:#171F1F;--color-surface:#1F2B2B;--color-surface-2:#273636;
+  --color-surface-offset:#141B1B;--color-border:#394B4B;--color-divider:#2D3C3C;
+  --color-text:#F0ECE1;--color-text-muted:#A6B4B2;--color-text-faint:#6B7D7B;
+  --color-primary:#D47A6A;--color-primary-hover:#E59384;--color-primary-highlight:#362624;
+  --color-success:#6DAA45;--color-warning:#E8AF34;--color-error:#D163A7;
+  --color-uncertain:#E8AF34;--color-uncertain-bg:#2A2618;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth;scroll-padding-top:5rem}
+body{min-height:100dvh;font-family:var(--font-body);font-size:16px;color:var(--color-text);background:var(--color-bg);line-height:1.55}
+button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
+input,textarea,select{font:inherit;color:inherit}
+a,button,[role="button"]{transition:color var(--transition),background var(--transition),border-color var(--transition),box-shadow var(--transition)}
+:focus-visible{outline:2px solid var(--color-warning);outline-offset:3px}
+
+/* HEADER */
+.site-header{position:sticky;top:0;z-index:100;background:rgba(252,250,245,0.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--color-border)}
+.header-inner{max-width:1040px;margin-inline:auto;padding:var(--space-3) var(--space-6);display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)}
+.logo{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;letter-spacing:-.02em;color:var(--color-text)}
+.logo-badge{background:var(--color-warning);width:8px;height:8px;display:inline-block}
+.header-actions{display:flex;align-items:center;gap:var(--space-3)}
+.progress-pill{display:flex;align-items:center;gap:var(--space-2);font-size:12px;font-weight:700;color:var(--color-text-muted);background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-full);padding:var(--space-1) var(--space-3)}
+.progress-fill{width:64px;height:5px;background:var(--color-divider);border-radius:var(--radius-full);overflow:hidden}
+.progress-bar{height:100%;background:var(--color-primary);border-radius:var(--radius-full);transition:width .4s ease}
+.theme-toggle{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-md);color:var(--color-text-muted);border:1px solid var(--color-border);background:var(--color-surface)}
+
+/* MAIN LAYOUT */
+.main{max-width:1040px;margin-inline:auto;padding:var(--space-8) var(--space-6) var(--space-16)}
+.intro-banner{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-6) var(--space-8);margin-bottom:var(--space-8);box-shadow:var(--shadow-sm)}
+.intro-banner h1{font-size:clamp(26px,3.5vw,36px);font-weight:800;letter-spacing:-.03em;margin-bottom:var(--space-2);color:var(--color-text)}
+.intro-banner p{color:var(--color-text-muted);font-size:15px;max-width:68ch;line-height:1.5}
+.legend{display:flex;flex-wrap:wrap;gap:var(--space-4);margin-top:var(--space-4);padding-top:var(--space-3);border-top:1px solid var(--color-divider)}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--color-text-muted)}
+.legend-dot{width:8px;height:8px;border-radius:2px}
+
+/* BLOCKS */
+.block{margin-bottom:var(--space-10)}
+.block-header{display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-4);padding-bottom:var(--space-3);border-bottom:2px solid var(--color-border)}
+.block-label{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--color-primary);font-family:var(--font-mono)}
+.block-title{font-size:20px;font-weight:800;letter-spacing:-.02em}
+.block-desc{font-size:14px;color:var(--color-text-muted);margin-top:2px}
+
+/* QUESTION CARD */
+.question-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-6);margin-bottom:var(--space-4);transition:all var(--transition);box-shadow:var(--shadow-sm)}
+.question-card.answered{border-color:var(--color-primary);box-shadow:0 0 0 1px var(--color-primary)}
+.question-card.uncertain{border-color:var(--color-warning);background:var(--color-uncertain-bg)}
+.q-header{display:flex;align-items:flex-start;gap:var(--space-3);margin-bottom:var(--space-4)}
+.q-num{flex-shrink:0;width:24px;height:24px;border-radius:var(--radius-sm);background:var(--color-surface-offset);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--color-text-muted);font-family:var(--font-mono);margin-top:2px}
+.q-num.done{background:var(--color-primary);color:#fff}
+.q-num.unsure{background:var(--color-warning);color:#fff}
+.q-text{font-size:17px;font-weight:700;line-height:1.4;flex:1}
+.q-rec{font-size:13px;font-weight:600;color:var(--color-primary);margin-top:var(--space-2);padding:var(--space-2) var(--space-3);background:var(--color-primary-highlight);border-radius:var(--radius-sm);border-left:3px solid var(--color-primary)}
+
+/* OPTIONS & VISUAL CARDS */
+.options{display:grid;grid-template-columns:1fr;gap:var(--space-3)}
+.option-label{display:flex;flex-direction:column;gap:8px;padding:var(--space-4);border-radius:var(--radius-md);border:1px solid var(--color-border);background:var(--color-surface-2);cursor:pointer;font-size:14px;transition:all var(--transition);position:relative}
+.option-label:hover{border-color:var(--color-primary);background:#FFFDFA}
+.option-label.selected{border-color:var(--color-primary);background:var(--color-primary-highlight);box-shadow:0 2px 8px rgba(135,72,61,0.12)}
+.option-label.recommended{border-style:dashed;border-color:var(--color-primary)}
+.option-header-row{display:flex;align-items:flex-start;gap:10px}
+.option-header-row input[type="radio"],.option-header-row input[type="checkbox"]{accent-color:var(--color-primary);width:18px;height:18px;flex-shrink:0;margin-top:2px;cursor:pointer}
+.option-title-text{font-size:15px;font-weight:800;color:var(--color-text)}
+.recommended-badge{font-size:11px;color:var(--color-primary);font-weight:800;margin-left:auto;flex-shrink:0;background:var(--color-primary-highlight);padding:2px 6px;border-radius:2px}
+
+/* GRAPHICS PREVIEW CONTAINER IN OPTION */
+.visual-preview{border:1px solid var(--color-border);background:var(--color-surface-offset);padding:14px;border-radius:var(--radius-sm);margin:8px 0;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.text-proposal{background:var(--color-surface);border-left:3px solid var(--color-warning);padding:8px 12px;font-size:13px;color:var(--color-text-muted);font-style:italic;line-height:1.45}
+.text-proposal strong{font-style:normal;color:var(--color-text);font-weight:700}
+
+/* UNCERTAIN TOGGLE */
+.uncertain-toggle{display:flex;align-items:center;gap:var(--space-2);margin-top:var(--space-4);font-size:12px;font-weight:700;color:var(--color-text-muted);cursor:pointer;padding-top:8px;border-top:1px dashed var(--color-divider)}
+.uncertain-toggle input{accent-color:var(--color-warning);cursor:pointer;width:14px;height:14px}
+.freetext{width:100%;margin-top:var(--space-3);padding:var(--space-3);background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-sm);font-size:14px;resize:vertical;min-height:60px}
+.freetext:focus{border-color:var(--color-primary);outline:none}
+
+/* SUBMIT */
+.submit-section{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-6) var(--space-8);margin-top:var(--space-8)}
+.submit-section h2{font-size:18px;font-weight:800;margin-bottom:4px}
+.submit-section p{font-size:14px;color:var(--color-text-muted);margin-bottom:var(--space-4)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:var(--radius-sm);font-size:15px;font-weight:800;transition:all var(--transition)}
+.btn-primary{background:var(--color-primary);color:#fff}
+.btn-primary:hover{background:var(--color-primary-hover)}
+.btn-secondary{background:var(--color-surface-offset);color:var(--color-text);border:1px solid var(--color-border)}
+.btn-secondary:hover{background:var(--color-surface-2)}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;padding:var(--space-4)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-lg);max-width:760px;width:100%;max-height:90dvh;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-lg)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:var(--space-4) var(--space-6);border-bottom:1px solid var(--color-divider)}
+.modal-body{flex:1;overflow-y:auto;padding:var(--space-5) var(--space-6)}
+.modal-footer{padding:var(--space-4) var(--space-6);border-top:1px solid var(--color-divider);display:flex;gap:var(--space-3);justify-content:flex-end}
+.output-area{background:var(--color-surface-offset);border:1px solid var(--color-border);border-radius:var(--radius-sm);padding:var(--space-4);font-family:var(--font-mono);font-size:12px;white-space:pre-wrap;line-height:1.6;max-height:360px;overflow-y:auto}
+.copy-toast{position:fixed;bottom:24px;right:24px;z-index:300;background:var(--color-text);color:var(--color-bg);padding:10px 18px;border-radius:var(--radius-full);font-size:13px;font-weight:700;transform:translateY(100px);opacity:0;transition:all .3s}
+.copy-toast.show{transform:translateY(0);opacity:1}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-badge"></span>
+      HistorieBevaring · Designbeslutninger
+    </div>
+    <div class="header-actions">
+      <div class="progress-pill">
+        <div class="progress-fill"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+        <span id="progressText">0 / 0</span>
+      </div>
+      <button class="theme-toggle" data-theme-toggle aria-label="Bytt mørkt/lyst modus">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <div class="intro-banner">
+    <h1>Arkitektur- og designvalg med synlig grafikk 🔥</h1>
+    <p>Velg de grafiske og tekstlige løsningene som best reflekterer <strong>enkel, klassisk ro og solid arkivkompetanse</strong> for Lovable-siden. Hvert alternativ viser en faktisk grafikk og et konkret tekstforslag.</p>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--color-primary)"></div>Anbefalt valg (forhåndsmerket)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--color-warning)"></div>Usikker / «?»</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--color-success)"></div>Besvart</div>
+    </div>
+  </div>
+
+  <form id="grillForm" novalidate></form>
+
+  <div class="submit-section">
+    <h2>Klar til å låse designet for koding?</h2>
+    <p>Besvarte valg: <span style="font-weight:800; color:var(--color-primary);" id="answeredCount">0</span> av <span id="totalCount">0</span>.</p>
+    <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+      <button type="button" class="btn btn-primary" onclick="generateOutput()">Generer svar til agent</button>
+      <button type="button" class="btn btn-secondary" onclick="resetForm()">Nullstill</button>
+      <span class="status-msg" id="statusMsg"></span>
+    </div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="outputModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 style="font-size:17px; font-weight:800;">📋 Genererte designbeslutninger</h3>
+      <button class="btn-secondary" style="padding:4px 8px;" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="output-area" id="outputArea"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="copyOutput()">Kopier til utklippstavle</button>
+      <button class="btn btn-secondary" onclick="downloadMd()">Last ned DECISIONS.md</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Lukk</button>
+    </div>
+  </div>
+</div>
+
+<div class="copy-toast" id="copyToast">Kopiert til utklippstavlen! ✓</div>
+
+<script>
+// ============================================================
+// SPØRSMÅL-DATA MED SYNLIG GRAFIKK OG TEKSTFORSLAG
+// ============================================================
+const QUESTIONS = [
+  {
+    block: "A",
+    blockTitle: "Visuelt Hovedmotiv (Hero Illustration)",
+    blockDesc: "Bærende beslutning: Hvordan illustreres sporet og arbeidsbordet i sidens førsteinntrykk?",
+    questions: [
+      {
+        id: "A1",
+        text: "Hvilken visuell komposisjon skal bære Hero-seksjonen?",
+        type: "radio",
+        rec: 0,
+        options: [
+          {
+            title: "Det rolige oppdagelsesbordet (Taktile arkivflater med 3 rolige spor)",
+            graphicSvg: `
+              <svg width="100%" height="150" viewBox="0 0 600 150" style="background:#E2DAC9; border:1px solid #C8BDAB; border-radius:3px;">
+                <!-- Bakgrunnsbord og rutenett -->
+                <line x1="0" y1="75" x2="600" y2="75" stroke="#CDC3B1" stroke-width="1" stroke-dasharray="2 4"/>
+                <!-- Dokument 1: Amerikabrev -->
+                <g transform="translate(40, 20) rotate(-2)">
+                  <rect width="160" height="110" fill="#FCFAF5" stroke="#CDC3B1" filter="drop-shadow(2px 4px 6px rgba(0,0,0,0.08))"/>
+                  <rect x="12" y="12" width="60" height="6" fill="#87483D"/>
+                  <line x1="12" y1="30" x2="140" y2="30" stroke="#CDC3B1"/>
+                  <line x1="12" y1="42" x2="130" y2="42" stroke="#CDC3B1"/>
+                  <line x1="12" y1="54" x2="110" y2="54" stroke="#CDC3B1"/>
+                  <rect x="130" y="80" width="8" height="8" fill="#B4863D"/>
+                </g>
+                <!-- Dokument 2: Kabinettfoto -->
+                <g transform="translate(230, 15) rotate(3)">
+                  <rect width="130" height="120" fill="#EDE5D6" stroke="#C4B69E" filter="drop-shadow(2px 4px 6px rgba(0,0,0,0.08))"/>
+                  <rect x="10" y="10" width="110" height="80" fill="#D3C8B4"/>
+                  <circle cx="65" cy="45" r="16" fill="#A89C86"/>
+                  <path d="M45 80 C45 65, 85 65, 85 80" fill="#A89C86"/>
+                  <rect x="105" y="95" width="8" height="8" fill="#87483D"/>
+                </g>
+                <!-- Dokument 3: Eiendomskart -->
+                <g transform="translate(390, 25) rotate(-1)">
+                  <rect width="170" height="100" fill="#FCFAF5" stroke="#CDC3B1" filter="drop-shadow(2px 4px 6px rgba(0,0,0,0.08))"/>
+                  <rect x="10" y="10" width="150" height="80" fill="none" stroke="#69725C" stroke-width="1" stroke-dasharray="4 2"/>
+                  <text x="20" y="30" font-size="10" font-family="sans-serif" font-weight="bold" fill="#54605E">GNR. 14 / BNR. 2</text>
+                  <circle cx="80" cy="55" r="4" fill="#B4863D"/>
+                  <rect x="140" y="70" width="8" height="8" fill="#B4863D"/>
+                </g>
+              </svg>`,
+            proposalText: "<strong>Tekstforslag Hero:</strong><br>«Ett ekte spor kan være nok til å begynne.»<br><em>Ingress:</em> Vi hjelper deg å hente fram, sortere og forstå familiehistorien – med praktisk AI som redskap og menneskelig vurdering i sentrum."
+          },
+          {
+            title: "Den metodiske saksmappen (Minimalistisk split-dossier)",
+            graphicSvg: `
+              <svg width="100%" height="150" viewBox="0 0 600 150" style="background:#E2DAC9; border:1px solid #C8BDAB; border-radius:3px;">
+                <!-- Venstre mappe-kolonne -->
+                <rect x="30" y="15" width="220" height="120" fill="#FCFAF5" stroke="#CDC3B1"/>
+                <rect x="40" y="25" width="200" height="24" fill="#1F2B2B"/>
+                <text x="50" y="41" font-size="10" fill="#FCFAF5" font-weight="bold">DOSSIER 01: AMERIKABREV</text>
+                <rect x="40" y="55" width="200" height="24" fill="#EDE5D6" stroke="#CDC3B1"/>
+                <text x="50" y="71" font-size="10" fill="#1F2B2B">DOSSIER 02: DÅPSVITNER</text>
+                <rect x="40" y="85" width="200" height="24" fill="#EDE5D6" stroke="#CDC3B1"/>
+                <!-- Høyre inspeksjonsflate -->
+                <rect x="270" y="15" width="300" height="120" fill="#1F2B2B"/>
+                <text x="290" y="45" font-size="14" fill="#E7C985" font-weight="bold">Arkivfaglig kildeinspeksjon</text>
+                <line x1="290" y1="58" x2="540" y2="58" stroke="#54605E"/>
+                <text x="290" y="80" font-size="11" fill="#FFFFFF">Krysssjekket mot passasjerlister Bergen 1912.</text>
+                <rect x="290" y="95" width="80" height="20" fill="#87483D"/>
+                <text x="302" y="109" font-size="10" fill="#FFFFFF" font-weight="bold">VERIFISERT</text>
+              </svg>`,
+            proposalText: "<strong>Tekstforslag Dossier:</strong><br>«Struktur og kildekontroll for ditt familiearkiv.»<br><em>Ingress:</em> Fra uleselig gotisk skrift til verifiserte slektslinjer. Se hvordan vi åpner sakene steg for steg."
+          }
+        ],
+        freetext: true
+      }
+    ]
+  },
+  {
+    block: "B",
+    blockTitle: "Taktile Arkivillustrasjoner & Vektorsett",
+    blockDesc: "Hvordan skal de grafiske arkivelementene tegnes for å sikre klassisk ro uten nostalgi-klisjeer?",
+    questions: [
+      {
+        id: "B1",
+        text: "Hvilket formspråk skal brukes for illustrasjoner av kilder og redskaper?",
+        type: "radio",
+        rec: 0,
+        options: [
+          {
+            title: "Presise, ubestrøkne arkivformer (8×8px markør, 1px linjer, ekte materialtoner)",
+            graphicSvg: `
+              <svg width="100%" height="110" viewBox="0 0 600 110" style="background:#FCFAF5; border:1px solid #CDC3B1;">
+                <!-- 1px linje og 8x8px markør -->
+                <g transform="translate(30, 25)">
+                  <rect x="0" y="0" width="8" height="8" fill="#B4863D"/>
+                  <text x="16" y="8" font-size="11" font-weight="bold" fill="#1F2B2B" font-family="sans-serif">SPOR 01</text>
+                  <line x1="0" y1="20" x2="160" y2="20" stroke="#CDC3B1" stroke-width="1"/>
+                  <text x="0" y="40" font-size="12" fill="#54605E">Gotisk håndskrift</text>
+                </g>
+                <!-- Notatark med avrevet kant -->
+                <g transform="translate(220, 15)">
+                  <polygon points="0,0 140,0 140,75 130,80 120,75 110,80 100,75 0,75" fill="#EDE5D6" stroke="#CDC3B1"/>
+                  <text x="14" y="24" font-size="11" font-weight="bold" fill="#87483D">KILDENOTAT</text>
+                  <line x1="14" y1="36" x2="120" y2="36" stroke="#CDC3B1"/>
+                  <line x1="14" y1="48" x2="100" y2="48" stroke="#CDC3B1"/>
+                </g>
+                <!-- Arkivlupe geometrisk -->
+                <g transform="translate(420, 15)">
+                  <circle cx="40" cy="40" r="28" fill="none" stroke="#1F2B2B" stroke-width="2"/>
+                  <circle cx="40" cy="40" r="24" fill="#E2DAC9" opacity="0.6"/>
+                  <line x1="60" y1="60" x2="90" y2="90" stroke="#1F2B2B" stroke-width="4" stroke-linecap="round"/>
+                  <rect x="36" y="36" width="8" height="8" fill="#87483D"/>
+                </g>
+              </svg>`,
+            proposalText: "<strong>Illustrasjonsregel:</strong> Ingen sepia-filtre, ingen tegnede kaffeflekker eller 'slitte' late-som-teksturer. Kun rene, presise linjer, ekte proporsjoner og rolige papirfarger."
+          },
+          {
+            title: "Moderne teknisk SVG-skisse (Mer digitalt preget med datanoder og koordinater)",
+            graphicSvg: `
+              <svg width="100%" height="110" viewBox="0 0 600 110" style="background:#1F2B2B; border:1px solid #394B4B;">
+                <circle cx="100" cy="55" r="6" fill="#E7C985"/>
+                <circle cx="300" cy="55" r="8" fill="#D47A6A"/>
+                <circle cx="500" cy="55" r="6" fill="#E7C985"/>
+                <line x1="106" y1="55" x2="292" y2="55" stroke="#54605E" stroke-dasharray="4 4"/>
+                <line x1="308" y1="55" x2="494" y2="55" stroke="#54605E" stroke-dasharray="4 4"/>
+                <text x="100" y="80" font-size="10" fill="#A6B4B2" text-anchor="middle">RÅDATA (BILDE)</text>
+                <text x="300" y="80" font-size="10" fill="#E7C985" font-weight="bold" text-anchor="middle">AI EMBEDDING</text>
+                <text x="500" y="80" font-size="10" fill="#A6B4B2" text-anchor="middle">KIRKEBOK MATCH</text>
+              </svg>`,
+            proposalText: "<strong>Teknisk regel:</strong> Fokuserer på AI-behandlingen, semantiske søkenettverk og dataflyt."
+          }
+        ],
+        freetext: true
+      }
+    ]
+  },
+  {
+    block: "C",
+    blockTitle: "Roll-over Interaksjon & Kildemarginal",
+    blockDesc: "Hvordan skal mikrotekstene oppføre seg for å skape ro og forklare kildekontrollen?",
+    questions: [
+      {
+        id: "C1",
+        text: "Hvordan skal roll-over-panelet vises når brukeren undersøker et spor?",
+        type: "radio",
+        rec: 0,
+        options: [
+          {
+            title: "Fast kildemarginal ved siden av bordet (Rolig lesesal-følelse uten overlappende sprettopp-bokser)",
+            graphicSvg: `
+              <svg width="100%" height="130" viewBox="0 0 600 130" style="background:#FCFAF5; border:1px solid #CDC3B1;">
+                <rect x="20" y="15" width="320" height="100" fill="#EDE5D6" stroke="#CDC3B1"/>
+                <text x="40" y="45" font-size="12" font-weight="bold" fill="#54605E">[ ARBEIDSBORD: HOVER PÅ BREV ]</text>
+                <circle cx="160" cy="70" r="14" fill="#B4863D" opacity="0.3"/>
+                <rect x="156" y="66" width="8" height="8" fill="#87483D"/>
+                
+                <!-- Fast panel til høyre -->
+                <rect x="360" y="15" width="220" height="100" fill="#FFFFFF" stroke="#87483D" stroke-width="1.5"/>
+                <text x="375" y="36" font-size="10" font-weight="bold" fill="#87483D">KILDENOTAT · SPOR 01</text>
+                <text x="375" y="54" font-size="12" font-weight="bold" fill="#1F2B2B">Amerikabrev 14. mai 1912</text>
+                <text x="375" y="72" font-size="11" fill="#54605E">AI: Transkribert håndskrift.</text>
+                <text x="375" y="88" font-size="11" fill="#54605E">Dom: Familien bekrefter onkel Lars.</text>
+              </svg>`,
+            proposalText: "<strong>Tekstforslag i panelet:</strong><br><strong>Kilde:</strong> Håndskrevet brev, poststemplet Duluth 1912.<br><strong>Praktisk AI:</strong> Transkripsjon av gotisk skrift og automatisk søk i passasjerlister.<br><strong>Menneskelig dom:</strong> Lars kontrollerer mot kirkebok; familien bekrefter personenes identitet."
+          },
+          {
+            title: "Flytende papirkort (Popover som svever rett over sporet)",
+            graphicSvg: `
+              <svg width="100%" height="130" viewBox="0 0 600 130" style="background:#E2DAC9; border:1px solid #CDC3B1;">
+                <rect x="180" y="20" width="240" height="90" fill="#FCFAF5" stroke="#CDC3B1" filter="drop-shadow(0 8px 16px rgba(0,0,0,0.15))"/>
+                <polygon points="300,110 290,120 310,120" fill="#FCFAF5"/>
+                <text x="195" y="40" font-size="10" font-weight="bold" fill="#87483D">SPOR 01 · AMERIKABREV</text>
+                <text x="195" y="60" font-size="13" font-weight="bold" fill="#1F2B2B">«Kjære broder i Kristiansand...»</text>
+                <text x="195" y="80" font-size="11" fill="#54605E">Søk i Digitalarkivet ga 1 verifisert treff.</text>
+              </svg>`,
+            proposalText: "<strong>Kompakt popover:</strong> Raskt overblikk rett på arbeidsbordet ved hover."
+          }
+        ],
+        freetext: true
+      }
+    ]
+  },
+  {
+    block: "D",
+    blockTitle: "Workshop & Ansvar (Call to Action)",
+    blockDesc: "Hvordan inviteres brukeren til den første workshopen i Kristiansand?",
+    questions: [
+      {
+        id: "D1",
+        text: "Hvilken ordlyd og ansvarsfordeling skal brukes for workshopen?",
+        type: "radio",
+        rec: 0,
+        options: [
+          {
+            title: "Nøktern workshop-invitasjon (2.5 timer i Kristiansand · Eget materiale · Maks 6 deltakere)",
+            graphicSvg: `
+              <svg width="100%" height="100" viewBox="0 0 600 100" style="background:#1F2B2B; border-radius:3px;">
+                <text x="30" y="36" font-size="11" font-weight="bold" fill="#E7C985">WORKSHOP I KRISTIANSAND</text>
+                <text x="30" y="62" font-size="18" font-weight="bold" fill="#FCFAF5">Ta med dine egne spor</text>
+                <text x="30" y="82" font-size="12" fill="#D2DDD8">2,5 timers samling med Lars som metodevert · Små grupper</text>
+                <rect x="420" y="30" width="150" height="40" fill="#87483D" rx="2"/>
+                <text x="495" y="55" font-size="13" font-weight="bold" fill="#FCFAF5" text-anchor="middle">Meld interesse →</text>
+              </svg>`,
+            proposalText: "<strong>Tekstforslag Workshop:</strong><br>«Har du en eske med gamle brev, et umerket foto eller et stedsnavn du vil finne ut av? På 2,5 timer i Kristiansand lærer du å koble arkivsøk, transkripsjon og praktisk AI. Du beholder fullt eierskap til eget materiale.»"
+          },
+          {
+            title: "Privat 1-til-1 kartleggingsmøte (90 minutter digitalt eller fysisk)",
+            graphicSvg: `
+              <svg width="100%" height="100" viewBox="0 0 600 100" style="background:#FCFAF5; border:1px solid #CDC3B1;">
+                <text x="30" y="36" font-size="11" font-weight="bold" fill="#87483D">PRIVAT KARTLEGGING</text>
+                <text x="30" y="62" font-size="18" font-weight="bold" fill="#1F2B2B">90 minutter med ditt familiearkiv</text>
+                <text x="30" y="82" font-size="12" fill="#54605E">En-til-en gjennomgang og metodeplan</text>
+                <rect x="420" y="30" width="150" height="40" fill="#1F2B2B" rx="2"/>
+                <text x="495" y="55" font-size="13" font-weight="bold" fill="#FCFAF5" text-anchor="middle">Bestill kartlegging</text>
+              </svg>`,
+            proposalText: "<strong>Tekstforslag Kartlegging:</strong><br>«En personlig 90-minutters arbeidsøkt hvor vi kartlegger hva som finnes, hvilke kilder som er tilgjengelige, og lager en konkret leteplan.»"
+          }
+        ],
+        freetext: true
+      }
+    ]
+  }
+];
+
+// ============================================================
+// BYGG SKJEMA MED GRAFIKK
+// ============================================================
+function buildForm() {
+  const form = document.getElementById('grillForm');
+  form.innerHTML = '';
+  let qIndex = 0;
+  QUESTIONS.forEach(block => {
+    const blockDiv = document.createElement('div');
+    blockDiv.className = 'block';
+    blockDiv.innerHTML = `
+      <div class="block-header">
+        <span class="block-label">Blokk ${block.block}</span>
+        <div>
+          <div class="block-title">${block.blockTitle}</div>
+          ${block.blockDesc ? `<div class="block-desc">${block.blockDesc}</div>` : ''}
+        </div>
+      </div>`;
+    block.questions.forEach(q => {
+      qIndex++;
+      const card = document.createElement('div');
+      card.className = 'question-card';
+      card.id = `card-${q.id}`;
+      const numEl = `<div class="q-num" id="num-${q.id}">${qIndex}</div>`;
+      const rec = q.rec !== null && q.rec !== undefined
+        ? `<div class="q-rec">✦ Anbefalt løsning: ${q.options[q.rec].title}</div>`
+        : '';
+      let optionsHtml = '<div class="options">';
+      q.options.forEach((opt, i) => {
+        const isRec = q.rec === i;
+        const inputType = q.type;
+        const inputName = `q_${q.id}`;
+        const inputId = `opt_${q.id}_${i}`;
+        const checked = isRec ? 'checked' : '';
+        optionsHtml += `
+          <label class="option-label${isRec?' recommended':''}" id="label_${q.id}_${i}" for="${inputId}">
+            <div class="option-header-row">
+              <input type="${inputType}" id="${inputId}" name="${inputName}" value="${i}" ${checked} onchange="onOptionChange('${q.id}')">
+              <span class="option-title-text">${opt.title}</span>
+              ${isRec ? '<span class="recommended-badge">↑ Anbefalt</span>' : ''}
+            </div>
+            ${opt.graphicSvg ? `<div class="visual-preview">${opt.graphicSvg}</div>` : ''}
+            ${opt.proposalText ? `<div class="text-proposal">${opt.proposalText}</div>` : ''}
+          </label>`;
+      });
+      optionsHtml += '</div>';
+      const freetextHtml = q.freetext
+        ? `<textarea class="freetext" id="free_${q.id}" placeholder="Kommentar eller justering på tekst/grafikk (valgfritt)…" rows="2" oninput="onFreetext('${q.id}')"></textarea>`
+        : '';
+      const uncertainHtml = `<label class="uncertain-toggle"><input type="checkbox" id="unsure_${q.id}" onchange="onUnsure('${q.id}')"> Usikker — må drøftes videre <strong>[?]</strong></label>`;
+      card.innerHTML = `
+        <div class="q-header">${numEl}<div class="q-text">${q.text}${rec}</div></div>
+        ${optionsHtml}
+        ${freetextHtml}
+        ${uncertainHtml}`;
+      blockDiv.appendChild(card);
+    });
+    form.appendChild(blockDiv);
+  });
+  updateProgress();
+  document.querySelectorAll('.option-label input:checked').forEach(inp => {
+    inp.closest('.option-label').classList.add('selected');
+  });
+}
+
+function onOptionChange(qid) {
+  document.querySelectorAll(`[name="q_${qid}"]`).forEach(inp => {
+    inp.closest('.option-label').classList.toggle('selected', inp.checked);
+  });
+  updateCardState(qid);
+  updateProgress();
+}
+function onFreetext(qid) { updateCardState(qid); updateProgress(); }
+function onUnsure(qid) {
+  const card = document.getElementById(`card-${qid}`);
+  const unsure = document.getElementById(`unsure_${qid}`).checked;
+  card.classList.toggle('uncertain', unsure);
+  const num = document.getElementById(`num-${qid}`);
+  if(unsure){num.classList.add('unsure');num.classList.remove('done');}
+  else { updateCardState(qid); }
+  updateProgress();
+}
+function updateCardState(qid) {
+  const card = document.getElementById(`card-${qid}`);
+  const unsure = document.getElementById(`unsure_${qid}`)?.checked;
+  if(unsure) return;
+  const hasCheck = [...document.querySelectorAll(`[name="q_${qid}"]`)].some(i=>i.checked);
+  const hasFree = document.getElementById(`free_${qid}`)?.value.trim().length > 0;
+  const answered = hasCheck || hasFree;
+  card.classList.toggle('answered', answered);
+  const num = document.getElementById(`num-${qid}`);
+  num.classList.toggle('done', answered);
+  num.classList.remove('unsure');
+}
+function updateProgress() {
+  let total = 0, answered = 0;
+  QUESTIONS.forEach(b => b.questions.forEach(q => {
+    total++;
+    const unsure = document.getElementById(`unsure_${q.id}`)?.checked;
+    const hasCheck = [...document.querySelectorAll(`[name="q_${q.id}"]`)].some(i=>i.checked);
+    const hasFree = document.getElementById(`free_${q.id}`)?.value.trim().length > 0;
+    if(unsure || hasCheck || hasFree) answered++;
+  }));
+  document.getElementById('progressBar').style.width = (answered/total*100)+'%';
+  document.getElementById('progressText').textContent = `${answered} / ${total}`;
+  document.getElementById('answeredCount').textContent = answered;
+  document.getElementById('totalCount').textContent = total;
+}
+
+function generateOutput() {
+  const now = new Date().toISOString().slice(0,10);
+  let md = `---\ntitle: "Designbeslutninger: HistorieBevaring"\ndate: ${now}\nstatus: filled\ntags: [grilling, design-valg, grafikk]\n---\n\n# Svar fra grill-me-with-forms\n\n`;
+  let unanswered = [];
+  let uncertain = [];
+
+  QUESTIONS.forEach(block => {
+    md += `## Blokk ${block.block} — ${block.blockTitle}\n\n`;
+    block.questions.forEach(q => {
+      const unsure = document.getElementById(`unsure_${q.id}`)?.checked;
+      const checked = [...document.querySelectorAll(`[name="q_${q.id}"]`)].filter(i=>i.checked).map(i=>q.options[parseInt(i.value)].title);
+      const free = document.getElementById(`free_${q.id}`)?.value.trim() || '';
+      if(unsure) {
+        uncertain.push(q.id);
+        md += `### ${q.id}. ${q.text}\n- [?] USIKKER — må avklares\n`;
+        if(free) md += `- Kommentar: ${free}\n`;
+      } else if(checked.length > 0 || free) {
+        md += `### ${q.id}. ${q.text}\n`;
+        checked.forEach(c => md += `- [x] ${c}\n`);
+        if(free) md += `- Kommentar/justering: ${free}\n`;
+      } else {
+        unanswered.push(q.id);
+        md += `### ${q.id}. ${q.text}\n- [ ] UBESVART — blokkerer videre steg\n`;
+      }
+      md += '\n';
+    });
+  });
+
+  if(unanswered.length) md += `\n---\n## ⚠️ Ubesvarte spørsmål\n${unanswered.map(i=>`- ${i}`).join('\n')}\n`;
+  if(uncertain.length) md += `\n---\n## ❓ Usikre valg\n${uncertain.map(i=>`- ${i}`).join('\n')}\n`;
+  md += `\n---\n*Generert av grill-me-with-forms ${now}*\n`;
+  md += `\n\`\`\`instructions_for_agent\nLes svarene over og iverksett de valgte grafiske komponentene og tekstene direkte i den endelige nettsiden.\n\`\`\`\n`;
+
+  document.getElementById('outputArea').textContent = md;
+  document.getElementById('outputModal').classList.add('open');
+  window._lastMd = md;
+}
+
+function closeModal() { document.getElementById('outputModal').classList.remove('open'); }
+function copyOutput() {
+  navigator.clipboard.writeText(window._lastMd||'').then(()=>{
+    const t = document.getElementById('copyToast');
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'), 2500);
+  });
+}
+function downloadMd() {
+  const blob = new Blob([window._lastMd||''], {type:'text/markdown'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'DECISIONS.md';
+  a.click();
+}
+function resetForm() {
+  if(!confirm('Nullstill alle svar?')) return;
+  buildForm();
+}
+
+(function(){
+  const t=document.querySelector('[data-theme-toggle]'),r=document.documentElement;
+  let d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+  r.setAttribute('data-theme',d);
+  t&&t.addEventListener('click',()=>{
+    d=d==='dark'?'light':'dark';
+    r.setAttribute('data-theme',d);
+  });
+})();
+
+document.getElementById('outputModal').addEventListener('click', function(e){
+  if(e.target===this) closeModal();
+});
+
+buildForm();
+</script>
+</body>
+</html>
