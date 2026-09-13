@@ -54,4 +54,13 @@ Se `docs/BESLUTNINGER_MARKEDSANALYSE_WORKSHOP_2026-08-29.md` for komplett beslut
   - *Det vi bidrar med:* Arkivfaglig rettledning, opplæring i relevante KI-verktøy og råd om formidling.
 - **Tone:** Nøktern, konkret, uselgende. Ingen detektiv-/sannhetsretorikk eller salgsfloskler.
 
+## Bildestil og visuell retning (Vedtatt 2026-09-13)
+
+- **Moderne research møter kildene:** Ikke støvete museum eller kunstig "vintage-nostalgi" i skinn og pergament. Bildene skal vise en aktiv, moderne research-hverdag der historiske kilder bearbeides med dagens verktøy.
+- **Motiver og utsnitt:**
+  - Tette, innzoomede utsnitt (makro og nærbilder) av lyst, skandinavisk arbeidsbord.
+  - Kanten av laptop/tastatur, kildemappe, notater, kaffekopp.
+  - Samspillet mellom fysisk kildemateriale (foto/dokument) og moderne strukturering/skjerm.
+- **Farger og lys:** Rent dagslys, nøytrale matte flater (beige #F4EFE4, linje #CDC3B1, dempet oker #B4863D). Ingen dramatiske filmfiltre eller 3D-glans.
+
 
