@@ -63,4 +63,17 @@ Se `docs/BESLUTNINGER_MARKEDSANALYSE_WORKSHOP_2026-08-29.md` for komplett beslut
   - Samspillet mellom fysisk kildemateriale (foto/dokument) og moderne strukturering/skjerm.
 - **Farger og lys:** Rent dagslys, nøytrale matte flater (beige #F4EFE4, linje #CDC3B1, dempet oker #B4863D). Ingen dramatiske filmfiltre eller 3D-glans.
 
+## Prosjektmodell og ansvarsfordeling (Vedtatt 2026-09-13)
+
+- **Modell:** Et prosjekt vi gjør sammen (verken ensomt kurs eller full fraskriving).
+- **Formatstøtte med KI:**
+  - *Lyd (Audio):* Tale til tekst / transkribering av muntlige opptak og minner.
+  - *Visuelt (Bilder & dokumenter):* OCR og tekstgjenkjenning fra bilder, ryddig arkivering av skannede kilder.
+  - *Tekst:* Sortering, person-/steduttrekk, tidslinjer og strukturering via språkmodeller.
+- **Ansvarsfordeling:**
+  - *Hva kunden gjør:* Eier materialet og historien, kjenner familiekonteksten, gjør vurderingene og faktakontrollen.
+  - *Hva vi gjør:* Setter opp og lærer bort KI-verktøyene (lyd, bilde, tekst), gir arkivfaglig veiledning i databaser og registre, og hjelper med struktur og kildeskikk.
+  - *Hva vi gjør sammen:* Avklarer mål ved start, jobber stegvis gjennom materialet, og sammenstiller et ferdig resultat.
+
+
 
